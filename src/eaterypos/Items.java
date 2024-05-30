@@ -213,6 +213,11 @@ public class Items extends javax.swing.JFrame {
         LogoutBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
         LogoutBtn.setForeground(new java.awt.Color(12, 18, 35));
         LogoutBtn.setText("LOGOUT");
+        LogoutBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                LogoutBtnMouseClicked(evt);
+            }
+        });
         LogoutBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 LogoutBtnActionPerformed(evt);
@@ -679,6 +684,12 @@ public class Items extends javax.swing.JFrame {
         // REFRESH ITEMS TABLE
         ShowItems();
     }//GEN-LAST:event_AddCategBtn1MouseClicked
+
+    private void LogoutBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LogoutBtnMouseClicked
+        // TODO add your handling code here:
+        new Login().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_LogoutBtnMouseClicked
 
     /**
      * @param args the command line arguments

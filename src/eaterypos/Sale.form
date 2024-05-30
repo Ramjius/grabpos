@@ -647,11 +647,6 @@
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="Logo">
-          <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="2" name="C:\Users\ramgm\Documents\NetBeansProjects\eaterypos\src\Logo\120 x120.png"/>
-            </Property>
-          </Properties>
         </Component>
         <Component class="javax.swing.JComboBox" name="ItemQty">
           <Properties>

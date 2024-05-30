@@ -681,6 +681,8 @@ public class Sale extends javax.swing.JFrame {
 
     private void LogoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogoutBtnActionPerformed
         // TODO add your handling code here:
+        new Login().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_LogoutBtnActionPerformed
     
     private void ItemsList1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ItemsList1MouseClicked
