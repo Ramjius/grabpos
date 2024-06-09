@@ -1,25 +1,26 @@
 package eaterypos;
 
+import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.jar.Attributes;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
 
 /**
  *
- * @author ramjius
+ * @author ramjius muhsin
  */
 public class Items extends javax.swing.JFrame {
 
     public Items() {
         initComponents();
         ShowItems();
+        Seticon();
     }
     ResultSet Rs = null, Rs1 = null;
     Connection Con = null;
@@ -32,7 +33,9 @@ public class Items extends javax.swing.JFrame {
      */
     @SuppressWarnings({"unchecked", "serial"})
     
-           
+    private void Seticon() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("Eatery POS.png")));
+    }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -62,6 +65,8 @@ public class Items extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         FilterCategory = new javax.swing.JComboBox<>();
         AddCategBtn1 = new javax.swing.JButton();
+        Logo = new javax.swing.JLabel();
+        OrderItemsBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -75,9 +80,9 @@ public class Items extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(12, 18, 35));
         jLabel2.setText("ADD ITEMS");
 
-        ItemsList.setBackground(new java.awt.Color(12, 18, 35));
+        ItemsList.setBackground(new java.awt.Color(5, 76, 74));
         ItemsList.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
-        ItemsList.setForeground(new java.awt.Color(247, 153, 95));
+        ItemsList.setForeground(new java.awt.Color(249, 188, 44));
         ItemsList.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -116,30 +121,30 @@ public class Items extends javax.swing.JFrame {
         jScrollPane1.setViewportView(ItemsList);
 
         jLabel3.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(247, 153, 95));
+        jLabel3.setForeground(new java.awt.Color(5, 76, 74));
         jLabel3.setText("ITEM NAME");
 
         ItemName.setBackground(new java.awt.Color(207, 217, 214));
         ItemName.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
         ItemName.setForeground(new java.awt.Color(12, 18, 35));
         ItemName.setToolTipText("");
-        ItemName.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(247, 153, 95)));
+        ItemName.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 188, 44)));
 
         jLabel4.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(247, 153, 95));
+        jLabel4.setForeground(new java.awt.Color(5, 76, 74));
         jLabel4.setText("CATEGORY");
 
         jLabel5.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(247, 153, 95));
+        jLabel5.setForeground(new java.awt.Color(5, 76, 74));
         jLabel5.setText("PRICE");
 
         ItemPrice.setBackground(new java.awt.Color(207, 217, 214));
         ItemPrice.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
         ItemPrice.setForeground(new java.awt.Color(12, 18, 35));
         ItemPrice.setToolTipText("");
-        ItemPrice.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(247, 153, 95)));
+        ItemPrice.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 188, 44)));
 
-        AddItemBtn.setBackground(new java.awt.Color(75, 173, 206));
+        AddItemBtn.setBackground(new java.awt.Color(249, 188, 44));
         AddItemBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
         AddItemBtn.setForeground(new java.awt.Color(12, 18, 35));
         AddItemBtn.setText("ADD");
@@ -153,23 +158,23 @@ public class Items extends javax.swing.JFrame {
         CategoryList.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
         CategoryList.setForeground(new java.awt.Color(12, 18, 35));
         CategoryList.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Fries", "Pizza Sleeves", "Wraps", "Chicken Wings", "Burger", "Meatballs", "Sandwiches", "Asian", "Salads", "Dessert" }));
-        CategoryList.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(247, 153, 95)));
+        CategoryList.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 188, 44)));
 
         jLabel6.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(12, 18, 35));
         jLabel6.setText("ADD CATEGORY");
 
         jLabel7.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(247, 153, 95));
+        jLabel7.setForeground(new java.awt.Color(5, 76, 74));
         jLabel7.setText("CATEGORY NAME");
 
         CategoryName.setBackground(new java.awt.Color(207, 217, 214));
         CategoryName.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
         CategoryName.setForeground(new java.awt.Color(12, 18, 35));
         CategoryName.setToolTipText("");
-        CategoryName.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(247, 153, 95)));
+        CategoryName.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 188, 44)));
 
-        AddCategBtn.setBackground(new java.awt.Color(75, 173, 206));
+        AddCategBtn.setBackground(new java.awt.Color(249, 188, 44));
         AddCategBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
         AddCategBtn.setForeground(new java.awt.Color(12, 18, 35));
         AddCategBtn.setText("ADD");
@@ -179,7 +184,7 @@ public class Items extends javax.swing.JFrame {
             }
         });
 
-        SaleBtn.setBackground(new java.awt.Color(75, 173, 206));
+        SaleBtn.setBackground(new java.awt.Color(249, 188, 44));
         SaleBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
         SaleBtn.setForeground(new java.awt.Color(12, 18, 35));
         SaleBtn.setText("SALE");
@@ -189,7 +194,7 @@ public class Items extends javax.swing.JFrame {
             }
         });
 
-        ItemsBtn.setBackground(new java.awt.Color(75, 173, 206));
+        ItemsBtn.setBackground(new java.awt.Color(249, 188, 44));
         ItemsBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
         ItemsBtn.setForeground(new java.awt.Color(12, 18, 35));
         ItemsBtn.setText("ITEMS");
@@ -199,7 +204,7 @@ public class Items extends javax.swing.JFrame {
             }
         });
 
-        OrdersBtn.setBackground(new java.awt.Color(75, 173, 206));
+        OrdersBtn.setBackground(new java.awt.Color(249, 188, 44));
         OrdersBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
         OrdersBtn.setForeground(new java.awt.Color(12, 18, 35));
         OrdersBtn.setText("ORDERS");
@@ -209,7 +214,7 @@ public class Items extends javax.swing.JFrame {
             }
         });
 
-        LogoutBtn.setBackground(new java.awt.Color(75, 173, 206));
+        LogoutBtn.setBackground(new java.awt.Color(255, 0, 51));
         LogoutBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
         LogoutBtn.setForeground(new java.awt.Color(12, 18, 35));
         LogoutBtn.setText("LOGOUT");
@@ -224,7 +229,7 @@ public class Items extends javax.swing.JFrame {
             }
         });
 
-        EditItemBtn.setBackground(new java.awt.Color(75, 173, 206));
+        EditItemBtn.setBackground(new java.awt.Color(249, 188, 44));
         EditItemBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
         EditItemBtn.setForeground(new java.awt.Color(12, 18, 35));
         EditItemBtn.setText("UPDATE");
@@ -234,7 +239,7 @@ public class Items extends javax.swing.JFrame {
             }
         });
 
-        RemoveItemBtn.setBackground(new java.awt.Color(247, 153, 95));
+        RemoveItemBtn.setBackground(new java.awt.Color(255, 0, 51));
         RemoveItemBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
         RemoveItemBtn.setForeground(new java.awt.Color(12, 18, 35));
         RemoveItemBtn.setText("REMOVE");
@@ -244,7 +249,7 @@ public class Items extends javax.swing.JFrame {
             }
         });
 
-        RemoveCategBtn.setBackground(new java.awt.Color(247, 153, 95));
+        RemoveCategBtn.setBackground(new java.awt.Color(255, 0, 51));
         RemoveCategBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
         RemoveCategBtn.setForeground(new java.awt.Color(12, 18, 35));
         RemoveCategBtn.setText("REMOVE");
@@ -262,16 +267,16 @@ public class Items extends javax.swing.JFrame {
         FilterCategory.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
         FilterCategory.setForeground(new java.awt.Color(12, 18, 35));
         FilterCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All Categories", "Fries", "Pizza Sleeves", "Wraps", "Chicken Wings", "Burger", "Meatballs", "Sandwiches", "Asian", "Salads", "Dessert" }));
-        FilterCategory.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(247, 153, 95)));
+        FilterCategory.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 188, 44)));
         FilterCategory.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 FilterCategoryItemStateChanged(evt);
             }
         });
 
-        AddCategBtn1.setBackground(new java.awt.Color(51, 255, 51));
+        AddCategBtn1.setBackground(new java.awt.Color(5, 76, 74));
         AddCategBtn1.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
-        AddCategBtn1.setForeground(new java.awt.Color(12, 18, 35));
+        AddCategBtn1.setForeground(new java.awt.Color(249, 188, 44));
         AddCategBtn1.setText("REFRESH");
         AddCategBtn1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -284,24 +289,47 @@ public class Items extends javax.swing.JFrame {
             }
         });
 
+        Logo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Logo/80x80.png"))); // NOI18N
+
+        OrderItemsBtn.setBackground(new java.awt.Color(249, 188, 44));
+        OrderItemsBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+        OrderItemsBtn.setForeground(new java.awt.Color(12, 18, 35));
+        OrderItemsBtn.setText("ORDER ITEMS");
+        OrderItemsBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                OrderItemsBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(SaleBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ItemsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(OrdersBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(LogoutBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8)
-                    .addComponent(FilterCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(19, 19, 19)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(SaleBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(ItemsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(OrdersBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(LogoutBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(OrderItemsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(47, 47, 47)
+                                .addComponent(Logo)))
+                        .addGap(29, 29, 29))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8)
+                            .addComponent(FilterCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 466, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -345,10 +373,14 @@ public class Items extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(OrdersBtn)
                         .addGap(18, 18, 18)
+                        .addComponent(OrderItemsBtn)
+                        .addGap(26, 26, 26)
                         .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(FilterCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(217, 217, 217)
+                        .addGap(18, 18, 18)
+                        .addComponent(Logo)
+                        .addGap(72, 72, 72)
                         .addComponent(LogoutBtn))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
@@ -389,18 +421,17 @@ public class Items extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
     int ItemID;
     private void CountItems() {
@@ -564,14 +595,20 @@ public class Items extends javax.swing.JFrame {
 
     private void SaleBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaleBtnActionPerformed
         // TODO add your handling code here:
+        new Sale().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_SaleBtnActionPerformed
 
     private void ItemsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ItemsBtnActionPerformed
         // TODO add your handling code here:
+        new Items().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_ItemsBtnActionPerformed
 
     private void OrdersBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OrdersBtnActionPerformed
         // TODO add your handling code here:
+        new Orders().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_OrdersBtnActionPerformed
 
     private void LogoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogoutBtnActionPerformed
@@ -691,6 +728,12 @@ public class Items extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_LogoutBtnMouseClicked
 
+    private void OrderItemsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OrderItemsBtnActionPerformed
+        // TODO add your handling code here:
+        new OrderItems().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_OrderItemsBtnActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -737,7 +780,9 @@ public class Items extends javax.swing.JFrame {
     private javax.swing.JTextField ItemPrice;
     private javax.swing.JButton ItemsBtn;
     private javax.swing.JTable ItemsList;
+    private javax.swing.JLabel Logo;
     private javax.swing.JButton LogoutBtn;
+    private javax.swing.JButton OrderItemsBtn;
     private javax.swing.JButton OrdersBtn;
     private javax.swing.JButton RemoveCategBtn;
     private javax.swing.JButton RemoveItemBtn;

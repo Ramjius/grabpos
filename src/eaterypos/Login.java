@@ -1,11 +1,12 @@
 
 package eaterypos;
 
+import java.awt.Toolkit;
 import javax.swing.JOptionPane;
 
 /**
  *
- * @author ramgm
+ * @author ramjius muhsin
  */
 public class Login extends javax.swing.JFrame {
 
@@ -14,6 +15,7 @@ public class Login extends javax.swing.JFrame {
      */
     public Login() {
         initComponents();
+        Seticon();
     }
 
     /**
@@ -44,28 +46,33 @@ public class Login extends javax.swing.JFrame {
         LoginTxt.setForeground(new java.awt.Color(0, 102, 102));
         LoginTxt.setText("LOGIN");
 
-        jLabel2.setFont(new java.awt.Font("Cambria", 0, 14)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 102, 102));
         jLabel2.setText("USER NAME");
 
-        jLabel3.setFont(new java.awt.Font("Cambria", 0, 14)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 102, 102));
         jLabel3.setText("PASSWORD");
 
         UsernameTab.setBackground(new java.awt.Color(207, 217, 214));
         UsernameTab.setToolTipText("");
-        UsernameTab.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(247, 153, 95)));
+        UsernameTab.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 188, 44)));
 
         PasswordTab.setBackground(new java.awt.Color(207, 217, 214));
         PasswordTab.setToolTipText("");
-        PasswordTab.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(247, 153, 95)));
+        PasswordTab.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 188, 44)));
 
-        LoginBtn.setBackground(new java.awt.Color(247, 153, 95));
+        LoginBtn.setBackground(new java.awt.Color(249, 188, 44));
         LoginBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
         LoginBtn.setForeground(new java.awt.Color(0, 102, 102));
         LoginBtn.setText("LOGIN");
+        LoginBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LoginBtnActionPerformed(evt);
+            }
+        });
 
-        SignUpBtn.setBackground(new java.awt.Color(247, 153, 95));
+        SignUpBtn.setBackground(new java.awt.Color(249, 188, 44));
         SignUpBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
         SignUpBtn.setForeground(new java.awt.Color(0, 102, 102));
         SignUpBtn.setText("SIGN UP");
@@ -134,7 +141,7 @@ public class Login extends javax.swing.JFrame {
                     .addComponent(SignUpBtn))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(ForgotPassword)
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -145,14 +152,17 @@ public class Login extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
+    
+    private void Seticon() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("300 px logo grab.png")));
+    }
+    
     private void SignUpBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignUpBtnActionPerformed
         // SIGN UP:
         if (UsernameTab.getText().isEmpty()||PasswordTab.getText().isEmpty()){
@@ -166,6 +176,20 @@ public class Login extends javax.swing.JFrame {
             PasswordTab.setText("");
         }
     }//GEN-LAST:event_SignUpBtnActionPerformed
+
+    private void LoginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginBtnActionPerformed
+        // LOGIN:
+        if (UsernameTab.getText().isEmpty()||PasswordTab.getText().isEmpty()){
+            JOptionPane.showMessageDialog(this, "Enter Username and Password");
+        }else if (UsernameTab.getText().equals("admin")&&PasswordTab.getText().equals("admin")) {
+            new Sale().setVisible(true);
+            this.dispose();
+        }else{
+            JOptionPane.showMessageDialog(this, "Invalid Username OR Password!!");
+            UsernameTab.setText("");
+            PasswordTab.setText("");
+        }
+    }//GEN-LAST:event_LoginBtnActionPerformed
 
     /**
      * @param args the command line arguments
