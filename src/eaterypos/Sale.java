@@ -857,16 +857,26 @@ public class Sale extends javax.swing.JFrame {
 
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Database error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (Exception e) {
+        } catch (HeadlessException | NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "An error occurred while processing the payment.", "Error", JOptionPane.ERROR_MESSAGE);
         } finally {
             // Close resources
             try {
-                if (rsOrderCount != null) rsOrderCount.close();
-                if (psOrderCount != null) psOrderCount.close();
-                if (psOrderItems != null) psOrderItems.close();
-                if (psOrders != null) psOrders.close();
-                if (conn != null) conn.close();
+                if (rsOrderCount != null) {
+                    rsOrderCount.close();
+                }
+                if (psOrderCount != null) {
+                    psOrderCount.close();
+                }
+                if (psOrderItems != null) {
+                    psOrderItems.close();
+                }
+                if (psOrders != null) {
+                    psOrders.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(null, "Error closing database connection: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }

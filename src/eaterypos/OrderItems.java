@@ -1,7 +1,6 @@
 
 package eaterypos;
 
-import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -22,7 +21,6 @@ public class OrderItems extends javax.swing.JFrame {
     public OrderItems() {
         initComponents();
         ShowItems();
-        Seticon();
     }
     
     ResultSet Rs = null;
@@ -68,7 +66,7 @@ public class OrderItems extends javax.swing.JFrame {
                 java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, true, true
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -204,9 +202,7 @@ public class OrderItems extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-    private void Seticon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("Eatery POS.png")));
-    }
+    
     
     private void ShowItems()
     {

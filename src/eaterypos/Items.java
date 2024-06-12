@@ -20,7 +20,6 @@ public class Items extends javax.swing.JFrame {
     public Items() {
         initComponents();
         ShowItems();
-        Seticon();
     }
     ResultSet Rs = null, Rs1 = null;
     Connection Con = null;
@@ -33,9 +32,6 @@ public class Items extends javax.swing.JFrame {
      */
     @SuppressWarnings({"unchecked", "serial"})
     
-    private void Seticon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("Eatery POS.png")));
-    }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
