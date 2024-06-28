@@ -1,7 +1,20 @@
 
 package eaterypos;
 
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.HeadlessException;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.print.PageFormat;
+import java.awt.print.Paper;
+import java.awt.print.Printable;
+import static java.awt.print.Printable.NO_SUCH_PAGE;
+import static java.awt.print.Printable.PAGE_EXISTS;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,7 +23,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
 
@@ -29,9 +45,9 @@ public class Sale extends javax.swing.JFrame {
         ItemPrice.setEditable(false);
         ItemName.setEditable(false);
     }
-    ResultSet Rs = null, Rs1 = null;
+    ResultSet Rs = null;
     Connection Con = null;
-    Statement St = null, St1 = null;
+    Statement St = null;
     static int lastOrderID = 0; // Keeps track of the last Order ID
     
     
@@ -97,6 +113,162 @@ public class Sale extends javax.swing.JFrame {
         }
     }
     
+    // Method to wrap text into multiple lines
+    private List<String> wrapText(String text, int maxWidth, FontMetrics metrics) {
+        List<String> lines = new ArrayList<>();
+        StringBuilder line = new StringBuilder();
+        for (String word : text.split(" ")) {
+            if (metrics.stringWidth(line + word) < maxWidth) {
+                line.append(word).append(" ");
+            } else {
+                lines.add(line.toString().trim());
+                line = new StringBuilder(word).append(" ");
+            }
+        }
+        if (!line.toString().isEmpty()) {
+            lines.add(line.toString().trim());
+        }
+        return lines;
+    }
+    
+    public class ReceiptPrinter implements Printable {
+    private JTable table;
+    private String logoPath;
+    private int grandTotal;
+    private int amountPaid;
+    private int change;
+    private String paymentMode;
+    private int discount;
+    private int orderID;
+    
+
+    public ReceiptPrinter(JTable table, String logoPath, int grandTotal, int amountPaid, int change, String paymentMode, int discount, int orderID) {
+        this.table = table;
+        this.logoPath = logoPath;
+        this.grandTotal = grandTotal;
+        this.amountPaid = amountPaid;
+        this.change = change;
+        this.paymentMode = paymentMode;
+        this.discount = discount;
+        this.orderID = orderID;
+    }
+
+    @Override
+    public int print(Graphics g, PageFormat pf, int page) throws PrinterException {
+        if (page > 0) {
+            return NO_SUCH_PAGE;
+        }
+
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.translate(pf.getImageableX(), pf.getImageableY());
+
+        int y = 20; // Starting y position
+
+        // Load and print the logo centered
+        try {
+            Image logo = Toolkit.getDefaultToolkit().getImage(logoPath);
+            int logoWidth = logo.getWidth(null);
+            int logoX = (int) (pf.getImageableWidth() - logoWidth) / 2;
+            g2d.drawImage(logo, logoX, y, null);
+            y += logo.getHeight(null) + 10; // Add space after logo
+        } catch (Exception e) {
+        }
+
+        // Print title
+        g2d.setFont(new Font("Cambria", Font.BOLD, 12));
+        g2d.drawString("Grab Garage", (int) (pf.getImageableWidth() / 2 - 40), y);
+        y += 20;
+
+        // Print subtitle
+        g2d.setFont(new Font("Cambria", Font.ITALIC, 10));
+        g2d.drawString("We Fix Your Cravings", (int) (pf.getImageableWidth() / 2 - 50), y);
+        y += 20;
+
+        // Print Order Number
+        g2d.setFont(new Font("Cambria", Font.PLAIN, 10));
+        g2d.drawString("Order # " + orderID, (int) (pf.getImageableWidth() - 80), y);
+        y += 20;
+
+        // Print broken line
+        g2d.drawString("---------------------------------", 0, y);
+        y += 20;
+
+        // Print table contents
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        g2d.setFont(new Font("Cambria", Font.PLAIN, 10));
+        FontMetrics metrics = g2d.getFontMetrics();
+
+        int maxItemNameWidth = (int) (pf.getImageableWidth() - 160); // Adjust this value as needed
+        int lineHeight = metrics.getHeight();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String itemName = model.getValueAt(i, 0).toString();
+            String itemPrice = model.getValueAt(i, 3).toString();
+
+            // Wrap the item name if necessary
+            List<String> wrappedItemName = wrapText(itemName, maxItemNameWidth, metrics);
+
+            // Print each line of the wrapped item name
+            for (String line : wrappedItemName) {
+                g2d.drawString(line, 0, y);
+                y += lineHeight;
+            }
+
+            // Print the price on the same line as the last line of the item name
+            g2d.drawString("Kshs " + itemPrice, (int) (pf.getImageableWidth() - 80), y - lineHeight);
+            y += 20; // Add additional spacing between items
+        }
+
+        // Print dotted line
+        g2d.drawString(".............................................", 0, y);
+        y += 20;
+
+        // Print Subtotal
+        g2d.drawString("Subtotal", 0, y);
+        g2d.drawString("Kshs " + grandTotal, (int) (pf.getImageableWidth() - 80), y);
+        y += 20;
+        
+        // Print Discount
+        //g2d.drawString("Discount", 0, y);
+        //g2d.drawString("Kshs " + discount, (int) (pf.getImageableWidth() - 80), y);
+        //y += 20;
+        
+        // Print Total
+        g2d.setFont(new Font("Cambria", Font.BOLD, 10));
+        g2d.drawString("Total", 0, y);
+        g2d.drawString("Kshs " + (grandTotal - discount), (int) (pf.getImageableWidth() - 80), y);
+        y += 20;
+
+        // Print continuous line
+        g2d.drawString("_________________________________", 0, y);
+        y += 20;
+
+        // Print Total Paid
+        g2d.setFont(new Font("Cambria", Font.PLAIN, 10));
+        g2d.drawString("Total Paid", 0, y);
+        g2d.drawString("Kshs " + amountPaid, (int) (pf.getImageableWidth() - 80), y);
+        y += 20;
+
+        // Print Change
+        g2d.drawString("Change", 0, y);
+        g2d.drawString("Kshs " + change, (int) (pf.getImageableWidth() - 80), y);
+        y += 20;
+
+        // Print Thank You Message
+        g2d.setFont(new Font("Cambria", Font.BOLD | Font.ITALIC, 8));
+        g2d.drawString("Thank You For Your Business", (int) (pf.getImageableWidth() / 2 - 60), y);
+        y += 20;
+        
+        // Print Date and Time
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd-MM-yyyy");
+        String dateTime = LocalDateTime.now().format(formatter);
+        g2d.setFont(new Font("Cambria", Font.PLAIN, 10));
+        g2d.drawString(dateTime, (int) (pf.getImageableWidth() / 2 - 50), y);
+
+        return PAGE_EXISTS;
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -127,7 +299,7 @@ public class Sale extends javax.swing.JFrame {
         RemoveItemBtn = new javax.swing.JButton();
         Logo = new javax.swing.JLabel();
         ItemQty = new javax.swing.JComboBox<>();
-        ClearListBtn = new javax.swing.JButton();
+        ClearOrderBtn = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         ChangeValue = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
@@ -137,12 +309,14 @@ public class Sale extends javax.swing.JFrame {
         Total = new javax.swing.JTextArea();
         AmountPaid = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
-        PrintBtn = new javax.swing.JButton();
         PayBtn = new javax.swing.JButton();
         PaymentMode = new javax.swing.JComboBox<>();
         DiscountField = new javax.swing.JTextField();
         Discount = new javax.swing.JLabel();
         PaymentLabel = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
+        SourceLabel = new javax.swing.JLabel();
+        SourceComboBox = new javax.swing.JComboBox<>();
         OrderItemsBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -232,7 +406,7 @@ public class Sale extends javax.swing.JFrame {
         FilterCategory.setBackground(new java.awt.Color(207, 217, 214));
         FilterCategory.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
         FilterCategory.setForeground(new java.awt.Color(12, 18, 35));
-        FilterCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All Categories", "Fries", "Pizza Sleeves", "Wraps", "Chicken Wings", "Burger", "Meatballs", "Sandwiches", "Asian", "Salads", "Dessert" }));
+        FilterCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All Categories", "Fries", "Pizza Sleeves", "Wraps", "Chicken Wings", "Burger", "Meatballs", "Sandwiches", "Asian", "Salads", "Dessert", "Extras", "Sausages", "Delivery", "Milk Shakes", "Juice (M)", "Juice (L)", "Cheezy", "Special" }));
         FilterCategory.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 188, 44)));
         FilterCategory.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -337,18 +511,18 @@ public class Sale extends javax.swing.JFrame {
             }
         });
 
-        ClearListBtn.setBackground(new java.awt.Color(255, 0, 51));
-        ClearListBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
-        ClearListBtn.setForeground(new java.awt.Color(12, 18, 35));
-        ClearListBtn.setText("CLEAR ITEMS");
-        ClearListBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+        ClearOrderBtn.setBackground(new java.awt.Color(255, 0, 51));
+        ClearOrderBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+        ClearOrderBtn.setForeground(new java.awt.Color(12, 18, 35));
+        ClearOrderBtn.setText("CLEAR ITEMS");
+        ClearOrderBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                ClearListBtnMouseClicked(evt);
+                ClearOrderBtnMouseClicked(evt);
             }
         });
-        ClearListBtn.addActionListener(new java.awt.event.ActionListener() {
+        ClearOrderBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ClearListBtnActionPerformed(evt);
+                ClearOrderBtnActionPerformed(evt);
             }
         });
 
@@ -422,18 +596,8 @@ public class Sale extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(5, 76, 74));
 
-        PrintBtn.setBackground(new java.awt.Color(249, 188, 44));
-        PrintBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
-        PrintBtn.setForeground(new java.awt.Color(12, 18, 35));
-        PrintBtn.setText("PRINT ORDER");
-        PrintBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PrintBtnActionPerformed(evt);
-            }
-        });
-
         PayBtn.setBackground(new java.awt.Color(249, 188, 44));
-        PayBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+        PayBtn.setFont(new java.awt.Font("Cambria", 1, 18)); // NOI18N
         PayBtn.setForeground(new java.awt.Color(12, 18, 35));
         PayBtn.setText("PAY");
         PayBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -443,6 +607,7 @@ public class Sale extends javax.swing.JFrame {
         });
 
         PaymentMode.setBackground(new java.awt.Color(5, 76, 74));
+        PaymentMode.setFont(new java.awt.Font("Cambria", 0, 14)); // NOI18N
         PaymentMode.setForeground(new java.awt.Color(249, 188, 44));
         PaymentMode.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "CASH", "M-PESA", "CARD" }));
 
@@ -451,9 +616,41 @@ public class Sale extends javax.swing.JFrame {
         DiscountField.setText("0");
         DiscountField.setToolTipText("");
 
+        Discount.setForeground(new java.awt.Color(255, 255, 255));
         Discount.setText("Discount");
 
+        PaymentLabel.setForeground(new java.awt.Color(255, 255, 255));
         PaymentLabel.setText("Payment Mode");
+
+        jPanel4.setBackground(new java.awt.Color(5, 76, 74));
+        jPanel4.setFont(new java.awt.Font("Cambria", 0, 14)); // NOI18N
+
+        SourceLabel.setForeground(new java.awt.Color(255, 255, 255));
+        SourceLabel.setText("Source");
+
+        SourceComboBox.setBackground(new java.awt.Color(5, 76, 74));
+        SourceComboBox.setFont(new java.awt.Font("Cambria", 0, 14)); // NOI18N
+        SourceComboBox.setForeground(new java.awt.Color(249, 188, 44));
+        SourceComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bolt", "Glovo", "In-House" }));
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addComponent(SourceLabel)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(SourceComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(SourceLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(SourceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -461,14 +658,17 @@ public class Sale extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(Discount)
-                    .addComponent(PaymentLabel)
-                    .addComponent(DiscountField)
-                    .addComponent(PaymentMode, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(PayBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(PrintBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(Discount)
+                            .addComponent(PaymentLabel)
+                            .addComponent(DiscountField)
+                            .addComponent(PaymentMode, 0, 147, Short.MAX_VALUE)
+                            .addComponent(PayBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -477,15 +677,15 @@ public class Sale extends javax.swing.JFrame {
                 .addComponent(PaymentLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                 .addComponent(PaymentMode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(21, 21, 21)
                 .addComponent(Discount)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(DiscountField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(PayBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(PrintBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12))
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(PayBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         OrderItemsBtn.setBackground(new java.awt.Color(249, 188, 44));
@@ -550,7 +750,7 @@ public class Sale extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                         .addComponent(RemoveItemBtn)
                         .addGap(18, 18, 18)
-                        .addComponent(ClearListBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(ClearOrderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
@@ -600,14 +800,14 @@ public class Sale extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
                             .addComponent(RemoveItemBtn)
-                            .addComponent(ClearListBtn))
+                            .addComponent(ClearOrderBtn))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -706,33 +906,25 @@ public class Sale extends javax.swing.JFrame {
     ItemPrice.setText(model.getValueAt(MyIndex, 3).toString());
     }//GEN-LAST:event_ItemsList1MouseClicked
 
-    private void PrintBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PrintBtnActionPerformed
-        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_PrintBtnActionPerformed
-
     private void RemoveItemBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RemoveItemBtnMouseClicked
         // TODO add your handling code here:
         
     }//GEN-LAST:event_RemoveItemBtnMouseClicked
     
     private void RemoveItemBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveItemBtnActionPerformed
-        // Remove Selected Item from Orders List
-        try {
-        DefaultTableModel model = (DefaultTableModel) OrdersList.getModel();
-        int selectedIndex = OrdersList.getSelectedRow();
+        // Get the selected row index
+        int selectedRow = OrdersList.getSelectedRow();
 
-        if (selectedIndex != -1) {
-            int total = Integer.parseInt(model.getValueAt(selectedIndex, 3).toString());
-            GrandT -= total;
-            Total.setText("Kshs " + GrandT);
-
-            model.removeRow(selectedIndex);
+        // Check if a row is selected
+        if (selectedRow == -1) {
+            // No row is selected, show a warning message
+            javax.swing.JOptionPane.showMessageDialog(null, "Please select a row to remove.", "No row selected", javax.swing.JOptionPane.WARNING_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(null, "Please select an item to remove.", "No Selection", JOptionPane.WARNING_MESSAGE);
-        }
-        } catch (HeadlessException | NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "An error occurred while trying to remove the item.", "Error", JOptionPane.ERROR_MESSAGE);
+            // Get the table model
+            javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) OrdersList.getModel();
+
+            // Remove the selected row from the model
+            model.removeRow(selectedRow);
         }
     }//GEN-LAST:event_RemoveItemBtnActionPerformed
 
@@ -744,11 +936,11 @@ public class Sale extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_AddToOrderMouseClicked
 
-    private void ClearListBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ClearListBtnMouseClicked
+    private void ClearOrderBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ClearOrderBtnMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_ClearListBtnMouseClicked
+    }//GEN-LAST:event_ClearOrderBtnMouseClicked
 
-    private void ClearListBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ClearListBtnActionPerformed
+    private void ClearOrderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ClearOrderBtnActionPerformed
         // Remove All Items from Orders List
         try {
             DefaultTableModel model = (DefaultTableModel) OrdersList.getModel();
@@ -763,7 +955,7 @@ public class Sale extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "An error occurred while trying to clear the list.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_ClearListBtnActionPerformed
+    }//GEN-LAST:event_ClearOrderBtnActionPerformed
 
     private void PayBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PayBtnActionPerformed
         Connection conn = null;
@@ -796,7 +988,7 @@ public class Sale extends javax.swing.JFrame {
 
             // Get the current date and time
             LocalDateTime now = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd-MM-yyyy");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
             String formattedDateTime = now.format(formatter);
 
             // Get the paid amount and calculate change
@@ -805,7 +997,7 @@ public class Sale extends javax.swing.JFrame {
             try {
                 amountPaid = Integer.parseInt(AmountPaid.getText());
                 change = amountPaid - GrandT;
-                ChangeValue.setText("Change: Kshs " + change);
+                ChangeValue.setText("Kshs " + change);
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(null, "Please enter a valid amount paid.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -813,9 +1005,12 @@ public class Sale extends javax.swing.JFrame {
 
             // Get the payment mode
             String paymentMode = PaymentMode.getSelectedItem().toString();
+            
+            // Get the payment mode
+            String sale_by = SourceComboBox.getSelectedItem().toString();
 
             // Prepare SQL query to insert order items
-            String sqlOrderItems = "INSERT INTO order_items (order_id, item_name, item_price, item_quantity, total) VALUES (?, ?, ?, ?, ?)";
+            String sqlOrderItems = "INSERT INTO order_items (order_id, item_name, item_price, item_quantity, total, date) VALUES (?, ?, ?, ?, ?, ?)";
             psOrderItems = conn.prepareStatement(sqlOrderItems);
 
             for (int i = 0; i < rowCount; i++) {
@@ -829,6 +1024,7 @@ public class Sale extends javax.swing.JFrame {
                 psOrderItems.setInt(3, itemPrice);
                 psOrderItems.setInt(4, itemQty);
                 psOrderItems.setInt(5, total);
+                psOrderItems.setString(6, formattedDateTime);
 
                 psOrderItems.addBatch(); // Add to batch for execution
             }
@@ -837,7 +1033,7 @@ public class Sale extends javax.swing.JFrame {
             psOrderItems.executeBatch();
 
             // Prepare SQL query to insert order
-            String sqlOrders = "INSERT INTO orders (order_id, order_date_time, grand_total, amount_paid, payment_mode, change_value) VALUES (?, ?, ?, ?, ?, ?)";
+            String sqlOrders = "INSERT INTO orders (order_id, order_date_time, grand_total, amount_paid, payment_mode, change_value, sale_by) VALUES (?, ?, ?, ?, ?, ?, ?)";
             psOrders = conn.prepareStatement(sqlOrders);
             psOrders.setInt(1, orderID);
             psOrders.setString(2, formattedDateTime);
@@ -845,6 +1041,7 @@ public class Sale extends javax.swing.JFrame {
             psOrders.setInt(4, amountPaid);
             psOrders.setString(5, paymentMode);
             psOrders.setInt(6, change);
+            psOrders.setString(7, sale_by);
 
             // Execute insertion for orders
             psOrders.executeUpdate();
@@ -852,8 +1049,35 @@ public class Sale extends javax.swing.JFrame {
             // Optional: Show a confirmation message (replace with logging if necessary)
             JOptionPane.showMessageDialog(null, "Order placed successfully!\nOrder ID: " + orderID + "\nAmount Paid: Kshs " + amountPaid + "\nChange: Kshs " + change, "Order Confirmation", JOptionPane.INFORMATION_MESSAGE);
 
+            // Print the receipt
+            String logoPath = "C:\\Users\\hp\\Documents\\grabpos 1.0\\80x80.png"; // Adjust the path to your logo image
+            PrinterJob job = PrinterJob.getPrinterJob();
+            PageFormat pf = job.defaultPage();
+            Paper paper = new Paper();
+            double width = 80 * 2.83464567; // 80mm width in points
+            double height = paper.getHeight();
+            paper.setSize(width, height);
+            double leftMargin = 50; // Left margin in points
+            double rightMargin = 50; // Right margin in points
+            paper.setImageableArea(leftMargin, 0, width - leftMargin - rightMargin, height);
+            pf.setPaper(paper);
+            
+            // Assuming placeholder values for missing parameters
+            int discount = 0;
+            int tax = 0; // Example placeholder
+
+            job.setPrintable(new ReceiptPrinter(OrdersList, logoPath, GrandT, amountPaid, change, formattedDateTime, discount, orderID), pf);
+
+            if (job.printDialog()) {
+                try {
+                    job.print();
+                } catch (PrinterException e) {
+                    JOptionPane.showMessageDialog(null, "Printing error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+
             // Clear the orders list and reset the total
-            ClearListBtnActionPerformed(evt);
+            ClearOrderBtnActionPerformed(evt);
 
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Database error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -927,7 +1151,7 @@ public class Sale extends javax.swing.JFrame {
     private javax.swing.JButton AddToOrder;
     private javax.swing.JTextField AmountPaid;
     private javax.swing.JLabel ChangeValue;
-    private javax.swing.JButton ClearListBtn;
+    private javax.swing.JButton ClearOrderBtn;
     private javax.swing.JLabel Discount;
     private javax.swing.JTextField DiscountField;
     private javax.swing.JComboBox<String> FilterCategory;
@@ -944,8 +1168,9 @@ public class Sale extends javax.swing.JFrame {
     private javax.swing.JButton PayBtn;
     private javax.swing.JLabel PaymentLabel;
     private javax.swing.JComboBox<String> PaymentMode;
-    private javax.swing.JButton PrintBtn;
     private javax.swing.JButton RemoveItemBtn;
+    private javax.swing.JComboBox<String> SourceComboBox;
+    private javax.swing.JLabel SourceLabel;
     private javax.swing.JTextArea Total;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -959,6 +1184,7 @@ public class Sale extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane4;

@@ -10,6 +10,9 @@ import java.sql.Statement;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -106,328 +109,341 @@ public class Items extends javax.swing.JFrame {
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
-        });
-        ItemsList.setRowHeight(30);
-        ItemsList.setShowGrid(true);
-        ItemsList.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                ItemsListMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(ItemsList);
+        }
+    );
+    ItemsList.setRowHeight(30);
+    ItemsList.setShowGrid(true);
+    ItemsList.addMouseListener(new java.awt.event.MouseAdapter() {
+        public void mouseClicked(java.awt.event.MouseEvent evt) {
+            ItemsListMouseClicked(evt);
+        }
+    });
+    jScrollPane1.setViewportView(ItemsList);
 
-        jLabel3.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(5, 76, 74));
-        jLabel3.setText("ITEM NAME");
+    jLabel3.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
+    jLabel3.setForeground(new java.awt.Color(5, 76, 74));
+    jLabel3.setText("ITEM NAME");
 
-        ItemName.setBackground(new java.awt.Color(207, 217, 214));
-        ItemName.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
-        ItemName.setForeground(new java.awt.Color(12, 18, 35));
-        ItemName.setToolTipText("");
-        ItemName.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 188, 44)));
+    ItemName.setBackground(new java.awt.Color(207, 217, 214));
+    ItemName.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
+    ItemName.setForeground(new java.awt.Color(12, 18, 35));
+    ItemName.setToolTipText("");
+    ItemName.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 188, 44)));
 
-        jLabel4.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(5, 76, 74));
-        jLabel4.setText("CATEGORY");
+    jLabel4.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
+    jLabel4.setForeground(new java.awt.Color(5, 76, 74));
+    jLabel4.setText("CATEGORY");
 
-        jLabel5.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(5, 76, 74));
-        jLabel5.setText("PRICE");
+    jLabel5.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
+    jLabel5.setForeground(new java.awt.Color(5, 76, 74));
+    jLabel5.setText("PRICE");
 
-        ItemPrice.setBackground(new java.awt.Color(207, 217, 214));
-        ItemPrice.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
-        ItemPrice.setForeground(new java.awt.Color(12, 18, 35));
-        ItemPrice.setToolTipText("");
-        ItemPrice.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 188, 44)));
+    ItemPrice.setBackground(new java.awt.Color(207, 217, 214));
+    ItemPrice.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
+    ItemPrice.setForeground(new java.awt.Color(12, 18, 35));
+    ItemPrice.setToolTipText("");
+    ItemPrice.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 188, 44)));
 
-        AddItemBtn.setBackground(new java.awt.Color(249, 188, 44));
-        AddItemBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
-        AddItemBtn.setForeground(new java.awt.Color(12, 18, 35));
-        AddItemBtn.setText("ADD");
-        AddItemBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AddItemBtnActionPerformed(evt);
-            }
-        });
+    AddItemBtn.setBackground(new java.awt.Color(249, 188, 44));
+    AddItemBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+    AddItemBtn.setForeground(new java.awt.Color(12, 18, 35));
+    AddItemBtn.setText("ADD");
+    AddItemBtn.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            AddItemBtnActionPerformed(evt);
+        }
+    });
 
-        CategoryList.setBackground(new java.awt.Color(207, 217, 214));
-        CategoryList.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
-        CategoryList.setForeground(new java.awt.Color(12, 18, 35));
-        CategoryList.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Fries", "Pizza Sleeves", "Wraps", "Chicken Wings", "Burger", "Meatballs", "Sandwiches", "Asian", "Salads", "Dessert" }));
-        CategoryList.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 188, 44)));
+    CategoryList.setBackground(new java.awt.Color(207, 217, 214));
+    CategoryList.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
+    CategoryList.setForeground(new java.awt.Color(12, 18, 35));
+    CategoryList.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Fries", "Pizza Sleeves", "Wraps", "Chicken Wings", "Burger", "Meatballs", "Sandwiches", "Asian", "Salads", "Dessert", "Extras", "Sausages", "Delivery", "Milk Shakes", "Juice (M)", "Juice (L)", "Cheezy", "Special" }));
+    CategoryList.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 188, 44)));
 
-        jLabel6.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(12, 18, 35));
-        jLabel6.setText("ADD CATEGORY");
+    jLabel6.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
+    jLabel6.setForeground(new java.awt.Color(12, 18, 35));
+    jLabel6.setText("ADD CATEGORY");
 
-        jLabel7.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(5, 76, 74));
-        jLabel7.setText("CATEGORY NAME");
+    jLabel7.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
+    jLabel7.setForeground(new java.awt.Color(5, 76, 74));
+    jLabel7.setText("CATEGORY NAME");
 
-        CategoryName.setBackground(new java.awt.Color(207, 217, 214));
-        CategoryName.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
-        CategoryName.setForeground(new java.awt.Color(12, 18, 35));
-        CategoryName.setToolTipText("");
-        CategoryName.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 188, 44)));
+    CategoryName.setBackground(new java.awt.Color(207, 217, 214));
+    CategoryName.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
+    CategoryName.setForeground(new java.awt.Color(12, 18, 35));
+    CategoryName.setToolTipText("");
+    CategoryName.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 188, 44)));
+    CategoryName.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            CategoryNameActionPerformed(evt);
+        }
+    });
 
-        AddCategBtn.setBackground(new java.awt.Color(249, 188, 44));
-        AddCategBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
-        AddCategBtn.setForeground(new java.awt.Color(12, 18, 35));
-        AddCategBtn.setText("ADD");
-        AddCategBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AddCategBtnActionPerformed(evt);
-            }
-        });
+    AddCategBtn.setBackground(new java.awt.Color(249, 188, 44));
+    AddCategBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+    AddCategBtn.setForeground(new java.awt.Color(12, 18, 35));
+    AddCategBtn.setText("ADD");
+    AddCategBtn.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            AddCategBtnActionPerformed(evt);
+        }
+    });
 
-        SaleBtn.setBackground(new java.awt.Color(249, 188, 44));
-        SaleBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
-        SaleBtn.setForeground(new java.awt.Color(12, 18, 35));
-        SaleBtn.setText("SALE");
-        SaleBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SaleBtnActionPerformed(evt);
-            }
-        });
+    SaleBtn.setBackground(new java.awt.Color(249, 188, 44));
+    SaleBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+    SaleBtn.setForeground(new java.awt.Color(12, 18, 35));
+    SaleBtn.setText("SALE");
+    SaleBtn.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            SaleBtnActionPerformed(evt);
+        }
+    });
 
-        ItemsBtn.setBackground(new java.awt.Color(249, 188, 44));
-        ItemsBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
-        ItemsBtn.setForeground(new java.awt.Color(12, 18, 35));
-        ItemsBtn.setText("ITEMS");
-        ItemsBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ItemsBtnActionPerformed(evt);
-            }
-        });
+    ItemsBtn.setBackground(new java.awt.Color(249, 188, 44));
+    ItemsBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+    ItemsBtn.setForeground(new java.awt.Color(12, 18, 35));
+    ItemsBtn.setText("ITEMS");
+    ItemsBtn.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            ItemsBtnActionPerformed(evt);
+        }
+    });
 
-        OrdersBtn.setBackground(new java.awt.Color(249, 188, 44));
-        OrdersBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
-        OrdersBtn.setForeground(new java.awt.Color(12, 18, 35));
-        OrdersBtn.setText("ORDERS");
-        OrdersBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                OrdersBtnActionPerformed(evt);
-            }
-        });
+    OrdersBtn.setBackground(new java.awt.Color(249, 188, 44));
+    OrdersBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+    OrdersBtn.setForeground(new java.awt.Color(12, 18, 35));
+    OrdersBtn.setText("ORDERS");
+    OrdersBtn.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            OrdersBtnActionPerformed(evt);
+        }
+    });
 
-        LogoutBtn.setBackground(new java.awt.Color(255, 0, 51));
-        LogoutBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
-        LogoutBtn.setForeground(new java.awt.Color(12, 18, 35));
-        LogoutBtn.setText("LOGOUT");
-        LogoutBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                LogoutBtnMouseClicked(evt);
-            }
-        });
-        LogoutBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                LogoutBtnActionPerformed(evt);
-            }
-        });
+    LogoutBtn.setBackground(new java.awt.Color(255, 0, 51));
+    LogoutBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+    LogoutBtn.setForeground(new java.awt.Color(12, 18, 35));
+    LogoutBtn.setText("LOGOUT");
+    LogoutBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+        public void mouseClicked(java.awt.event.MouseEvent evt) {
+            LogoutBtnMouseClicked(evt);
+        }
+    });
+    LogoutBtn.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            LogoutBtnActionPerformed(evt);
+        }
+    });
 
-        EditItemBtn.setBackground(new java.awt.Color(249, 188, 44));
-        EditItemBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
-        EditItemBtn.setForeground(new java.awt.Color(12, 18, 35));
-        EditItemBtn.setText("UPDATE");
-        EditItemBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                EditItemBtnActionPerformed(evt);
-            }
-        });
+    EditItemBtn.setBackground(new java.awt.Color(249, 188, 44));
+    EditItemBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+    EditItemBtn.setForeground(new java.awt.Color(12, 18, 35));
+    EditItemBtn.setText("UPDATE");
+    EditItemBtn.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            EditItemBtnActionPerformed(evt);
+        }
+    });
 
-        RemoveItemBtn.setBackground(new java.awt.Color(255, 0, 51));
-        RemoveItemBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
-        RemoveItemBtn.setForeground(new java.awt.Color(12, 18, 35));
-        RemoveItemBtn.setText("REMOVE");
-        RemoveItemBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                RemoveItemBtnActionPerformed(evt);
-            }
-        });
+    RemoveItemBtn.setBackground(new java.awt.Color(255, 0, 51));
+    RemoveItemBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+    RemoveItemBtn.setForeground(new java.awt.Color(12, 18, 35));
+    RemoveItemBtn.setText("REMOVE");
+    RemoveItemBtn.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            RemoveItemBtnActionPerformed(evt);
+        }
+    });
 
-        RemoveCategBtn.setBackground(new java.awt.Color(255, 0, 51));
-        RemoveCategBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
-        RemoveCategBtn.setForeground(new java.awt.Color(12, 18, 35));
-        RemoveCategBtn.setText("REMOVE");
-        RemoveCategBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                RemoveCategBtnActionPerformed(evt);
-            }
-        });
+    RemoveCategBtn.setBackground(new java.awt.Color(255, 0, 51));
+    RemoveCategBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+    RemoveCategBtn.setForeground(new java.awt.Color(12, 18, 35));
+    RemoveCategBtn.setText("REMOVE");
+    RemoveCategBtn.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            RemoveCategBtnActionPerformed(evt);
+        }
+    });
 
-        jLabel8.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel8.setText("Filter By Category");
+    jLabel8.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
+    jLabel8.setForeground(new java.awt.Color(0, 0, 0));
+    jLabel8.setText("Filter By Category");
 
-        FilterCategory.setBackground(new java.awt.Color(207, 217, 214));
-        FilterCategory.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
-        FilterCategory.setForeground(new java.awt.Color(12, 18, 35));
-        FilterCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All Categories", "Fries", "Pizza Sleeves", "Wraps", "Chicken Wings", "Burger", "Meatballs", "Sandwiches", "Asian", "Salads", "Dessert" }));
-        FilterCategory.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 188, 44)));
-        FilterCategory.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                FilterCategoryItemStateChanged(evt);
-            }
-        });
+    FilterCategory.setBackground(new java.awt.Color(207, 217, 214));
+    FilterCategory.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
+    FilterCategory.setForeground(new java.awt.Color(12, 18, 35));
+    FilterCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All Categories", "Fries", "Pizza Sleeves", "Wraps", "Chicken Wings", "Burger", "Meatballs", "Sandwiches", "Asian", "Salads", "Dessert" }));
+    FilterCategory.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 188, 44)));
+    FilterCategory.addItemListener(new java.awt.event.ItemListener() {
+        public void itemStateChanged(java.awt.event.ItemEvent evt) {
+            FilterCategoryItemStateChanged(evt);
+        }
+    });
+    FilterCategory.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            FilterCategoryActionPerformed(evt);
+        }
+    });
 
-        AddCategBtn1.setBackground(new java.awt.Color(5, 76, 74));
-        AddCategBtn1.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
-        AddCategBtn1.setForeground(new java.awt.Color(249, 188, 44));
-        AddCategBtn1.setText("REFRESH");
-        AddCategBtn1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                AddCategBtn1MouseClicked(evt);
-            }
-        });
-        AddCategBtn1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AddCategBtn1ActionPerformed(evt);
-            }
-        });
+    AddCategBtn1.setBackground(new java.awt.Color(5, 76, 74));
+    AddCategBtn1.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+    AddCategBtn1.setForeground(new java.awt.Color(249, 188, 44));
+    AddCategBtn1.setText("REFRESH");
+    AddCategBtn1.addMouseListener(new java.awt.event.MouseAdapter() {
+        public void mouseClicked(java.awt.event.MouseEvent evt) {
+            AddCategBtn1MouseClicked(evt);
+        }
+    });
+    AddCategBtn1.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            AddCategBtn1ActionPerformed(evt);
+        }
+    });
 
-        Logo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Logo/80x80.png"))); // NOI18N
+    Logo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Logo/80x80.png"))); // NOI18N
 
-        OrderItemsBtn.setBackground(new java.awt.Color(249, 188, 44));
-        OrderItemsBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
-        OrderItemsBtn.setForeground(new java.awt.Color(12, 18, 35));
-        OrderItemsBtn.setText("ORDER ITEMS");
-        OrderItemsBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                OrderItemsBtnActionPerformed(evt);
-            }
-        });
+    OrderItemsBtn.setBackground(new java.awt.Color(249, 188, 44));
+    OrderItemsBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+    OrderItemsBtn.setForeground(new java.awt.Color(12, 18, 35));
+    OrderItemsBtn.setText("ORDER ITEMS");
+    OrderItemsBtn.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            OrderItemsBtnActionPerformed(evt);
+        }
+    });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(19, 19, 19)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(SaleBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(ItemsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(OrdersBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(LogoutBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(OrderItemsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(47, 47, 47)
-                                .addComponent(Logo)))
-                        .addGap(29, 29, 29))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel8)
-                            .addComponent(FilterCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 466, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel3)
-                                .addComponent(jLabel2)
-                                .addComponent(jLabel4)
-                                .addComponent(ItemName)
-                                .addComponent(jLabel5)
-                                .addComponent(ItemPrice)
-                                .addComponent(AddItemBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(CategoryList, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(EditItemBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(AddCategBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel6)
-                                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(CategoryName, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addComponent(RemoveItemBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(RemoveCategBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(41, 41, 41))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(307, 307, 307)
-                .addComponent(AddCategBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
-                        .addComponent(SaleBtn)
-                        .addGap(18, 18, 18)
-                        .addComponent(ItemsBtn)
-                        .addGap(18, 18, 18)
-                        .addComponent(OrdersBtn)
-                        .addGap(18, 18, 18)
-                        .addComponent(OrderItemsBtn)
-                        .addGap(26, 26, 26)
+    javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+    jPanel1.setLayout(jPanel1Layout);
+    jPanel1Layout.setHorizontalGroup(
+        jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGap(19, 19, 19)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(SaleBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(ItemsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(OrdersBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(OrderItemsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGap(47, 47, 47)
+                            .addComponent(Logo)))
+                    .addGap(29, 29, 29))
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(FilterCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(Logo)
-                        .addGap(72, 72, 72)
-                        .addComponent(LogoutBtn))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(19, 19, 19)
-                        .addComponent(jLabel3)
-                        .addGap(5, 5, 5)
-                        .addComponent(ItemName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(CategoryList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ItemPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(AddItemBtn)
-                        .addGap(18, 18, 18)
-                        .addComponent(EditItemBtn)
-                        .addGap(18, 18, 18)
-                        .addComponent(RemoveItemBtn)
-                        .addGap(11, 11, 11)
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(CategoryName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(AddCategBtn)
-                        .addGap(18, 18, 18)
-                        .addComponent(RemoveCategBtn)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(AddCategBtn1)
-                .addContainerGap(13, Short.MAX_VALUE))
-        );
+                        .addComponent(FilterCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(LogoutBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGap(18, 18, 18)))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel1)
+                            .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 598, Short.MAX_VALUE))
+                    .addGap(18, 18, 18)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel4)
+                                    .addComponent(ItemName)
+                                    .addComponent(jLabel5)
+                                    .addComponent(ItemPrice)
+                                    .addComponent(AddItemBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(CategoryList, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(EditItemBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(AddCategBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel6)
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(CategoryName, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(RemoveItemBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(RemoveCategBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGap(41, 41, 41))
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(227, 227, 227)
+                    .addComponent(AddCategBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+    );
+    jPanel1Layout.setVerticalGroup(
+        jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(jPanel1Layout.createSequentialGroup()
+            .addContainerGap()
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(37, 37, 37)
+                    .addComponent(SaleBtn)
+                    .addGap(18, 18, 18)
+                    .addComponent(ItemsBtn)
+                    .addGap(18, 18, 18)
+                    .addComponent(OrdersBtn)
+                    .addGap(18, 18, 18)
+                    .addComponent(OrderItemsBtn)
+                    .addGap(26, 26, 26)
+                    .addComponent(jLabel8)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(FilterCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(18, 18, 18)
+                    .addComponent(Logo))
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addComponent(jLabel2)
+                    .addGap(19, 19, 19)
+                    .addComponent(jLabel3)
+                    .addGap(5, 5, 5)
+                    .addComponent(ItemName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jLabel4)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(CategoryList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jLabel5)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(ItemPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(18, 18, 18)
+                    .addComponent(AddItemBtn)
+                    .addGap(18, 18, 18)
+                    .addComponent(EditItemBtn)
+                    .addGap(18, 18, 18)
+                    .addComponent(RemoveItemBtn)
+                    .addGap(11, 11, 11)
+                    .addComponent(jLabel6)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jLabel7)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(CategoryName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(18, 18, 18)
+                    .addComponent(AddCategBtn)
+                    .addGap(18, 18, 18)
+                    .addComponent(RemoveCategBtn))
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addComponent(jLabel1)
+                    .addGap(18, 18, 18)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)))
+            .addGap(12, 12, 12)
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(LogoutBtn)
+                .addComponent(AddCategBtn1))
+            .addContainerGap())
+    );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
+    javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+    getContentPane().setLayout(layout);
+    layout.setHorizontalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+    );
+    layout.setVerticalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+    );
 
-        pack();
-        setLocationRelativeTo(null);
+    pack();
+    setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
     int ItemID;
     private void CountItems() {
@@ -533,6 +549,32 @@ public class Items extends javax.swing.JFrame {
                 CategoryList.setSelectedIndex(-1);
                 Key = 0;
     }
+    
+    // Method to save categories to a file
+    private void saveCategoriesToFile() {
+        List<String> categories = new ArrayList<>();
+        for (int i = 0; i < CategoryList.getItemCount(); i++) {
+            categories.add(CategoryList.getItemAt(i));
+        }
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("./categories.dat"))) {
+            oos.writeObject(categories);
+        } catch (IOException e) {
+        }
+    }
+    
+    // Method to load categories from a file
+    private void loadCategoriesFromFile() {
+        File file = new File("./categories.dat");
+        if (file.exists()) {
+            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+                List<String> categories = (List<String>) ois.readObject();
+                for (String category : categories) {
+                    CategoryList.addItem(category);
+                }
+            } catch (IOException | ClassNotFoundException e) {
+            }
+        }
+    }
 
     
     private void AddItemBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddItemBtnActionPerformed
@@ -586,7 +628,23 @@ public class Items extends javax.swing.JFrame {
 
 
     private void AddCategBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddCategBtnActionPerformed
-        // TODO add your handling code here:
+        // Get the category name from the text field
+        String categoryName = CategoryName.getText().trim();
+
+        // Check if the category name is valid (not empty)
+        if (categoryName.isEmpty()) {
+            // Show a warning message if the category name is empty
+            javax.swing.JOptionPane.showMessageDialog(null, "Please enter a category name.", "Invalid input", javax.swing.JOptionPane.WARNING_MESSAGE);
+        } else {
+            // Add the category to the combo box
+            CategoryList.addItem(categoryName);
+
+            // Save the categories to the file
+            saveCategoriesToFile();
+
+            // Optionally, clear the text field after adding
+            CategoryName.setText("");
+        }
     }//GEN-LAST:event_AddCategBtnActionPerformed
 
     private void SaleBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaleBtnActionPerformed
@@ -689,10 +747,46 @@ public class Items extends javax.swing.JFrame {
                 }
             }
         }
+        
     }//GEN-LAST:event_RemoveItemBtnActionPerformed
 
     private void RemoveCategBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveCategBtnActionPerformed
-        // TODO add your handling code here:
+        // REMOVE AN ITEM
+        if (Key == 0) {
+            JOptionPane.showMessageDialog(this, "Please select an item to delete");
+        } else {
+            int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this item?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                try {
+                    Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
+                    String deleteQuery = "DELETE FROM items WHERE ItemID = ?";
+
+                    try (PreparedStatement Pst = Con.prepareStatement(deleteQuery)) {
+                        Pst.setInt(1, Key);
+
+                        int row = Pst.executeUpdate();
+
+                        if (row > 0) {
+                            JOptionPane.showMessageDialog(this, "Item Deleted Successfully");
+                            ShowItems();
+                            clearFields();
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Failed to Delete Item");
+                        }
+                    }
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage());
+                } finally {
+                    if (Con != null) {
+                        try {
+                            Con.close();
+                        } catch (SQLException ex) {
+                            // Handle close exception if necessary
+                        }
+                    }
+                }
+            }
+        }
     }//GEN-LAST:event_RemoveCategBtnActionPerformed
     int Key = 0;
     private void ItemsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ItemsListMouseClicked
@@ -729,6 +823,41 @@ public class Items extends javax.swing.JFrame {
         new OrderItems().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_OrderItemsBtnActionPerformed
+
+    private void CategoryNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CategoryNameActionPerformed
+        // Get the category name from the text field
+        String categoryName = CategoryName.getText().trim();
+
+        // Check if the category name is valid (not empty)
+        if (categoryName.isEmpty()) {
+            // Show a warning message if the category name is empty
+            javax.swing.JOptionPane.showMessageDialog(null, "Please enter a category name.", "Invalid input", javax.swing.JOptionPane.WARNING_MESSAGE);
+        } else {
+            // Check if the category exists in the combo box
+            boolean categoryExists = false;
+            for (int i = 0; i < CategoryList.getItemCount(); i++) {
+                if (CategoryList.getItemAt(i).equals(categoryName)) {
+                    categoryExists = true;
+                    break;
+                }
+            }
+
+            // If the category exists, remove it
+            if (categoryExists) {
+                CategoryList.removeItem(categoryName);
+
+                // Optionally, clear the text field after removing
+                CategoryName.setText("");
+            } else {
+                // Show a warning message if the category does not exist
+                javax.swing.JOptionPane.showMessageDialog(null, "Category not found.", "Invalid input", javax.swing.JOptionPane.WARNING_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_CategoryNameActionPerformed
+
+    private void FilterCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FilterCategoryActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_FilterCategoryActionPerformed
 
     /**
      * @param args the command line arguments
