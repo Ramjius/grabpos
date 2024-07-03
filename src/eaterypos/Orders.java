@@ -7,17 +7,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
 import org.eclipse.jdt.internal.compiler.batch.Main;
 
 /**
  *
- * @author ramjius muhsin
+ * @author Ramjius Muhsin
  */
 public class Orders extends javax.swing.JFrame {
 
@@ -75,6 +77,9 @@ public class Orders extends javax.swing.JFrame {
         PaymentModeFilter = new javax.swing.JComboBox<>();
         jLabel7 = new javax.swing.JLabel();
         ResetOrders1 = new javax.swing.JButton();
+        ReportsBtn = new javax.swing.JButton();
+        ReportsBtn1 = new javax.swing.JButton();
+        PrintOrders = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -358,6 +363,11 @@ public class Orders extends javax.swing.JFrame {
                 PaymentModeFilterItemStateChanged(evt);
             }
         });
+        PaymentModeFilter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PaymentModeFilterActionPerformed(evt);
+            }
+        });
 
         jLabel7.setBackground(new java.awt.Color(255, 255, 255));
         jLabel7.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
@@ -405,32 +415,66 @@ public class Orders extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        ReportsBtn.setBackground(new java.awt.Color(249, 188, 44));
+        ReportsBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+        ReportsBtn.setForeground(new java.awt.Color(12, 18, 35));
+        ReportsBtn.setText("REPORTS");
+        ReportsBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ReportsBtnActionPerformed(evt);
+            }
+        });
+
+        ReportsBtn1.setBackground(new java.awt.Color(249, 188, 44));
+        ReportsBtn1.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+        ReportsBtn1.setForeground(new java.awt.Color(12, 18, 35));
+        ReportsBtn1.setText("EXPENSES");
+        ReportsBtn1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ReportsBtn1ActionPerformed(evt);
+            }
+        });
+
+        PrintOrders.setBackground(new java.awt.Color(249, 188, 44));
+        PrintOrders.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+        PrintOrders.setForeground(new java.awt.Color(12, 18, 35));
+        PrintOrders.setIcon(new javax.swing.ImageIcon("C:\\Users\\ramgm\\Documents\\NetBeansProjects\\grabpos\\printer.png")); // NOI18N
+        PrintOrders.setText("PRINT");
+        PrintOrders.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PrintOrdersActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(35, 35, 35)
-                        .addComponent(Logo))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(17, 17, 17)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(ItemsBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Sale, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Orders, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(17, 17, 17)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(Orders, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Logout, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(OrdersItemsBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(OrdersItemsBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(ReportsBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(ReportsBtn1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(Logo)
+                        .addGap(32, 32, 32)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(291, 291, 291)
+                        .addComponent(PrintOrders, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
@@ -470,16 +514,24 @@ public class Orders extends javax.swing.JFrame {
                                 .addComponent(ItemsBtn))
                             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(Orders)
                                 .addGap(18, 18, 18)
                                 .addComponent(OrdersItemsBtn)
-                                .addGap(30, 30, 30)
+                                .addGap(18, 18, 18)
+                                .addComponent(ReportsBtn1)
+                                .addGap(18, 18, 18)
+                                .addComponent(ReportsBtn)
+                                .addGap(54, 54, 54)
                                 .addComponent(Logo)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(Logout))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(73, 73, 73))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                .addGap(11, 11, 11)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(PrintOrders, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Logout)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -492,7 +544,7 @@ public class Orders extends javax.swing.JFrame {
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(PrintBtn)))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addGap(7, 7, 7))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -512,7 +564,7 @@ public class Orders extends javax.swing.JFrame {
     private void ShowItems()
     {
         try {
-            Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
+            Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
             St = Con.createStatement();
             Rs = St.executeQuery("SELECT * FROM orders");
 
@@ -565,8 +617,8 @@ public class Orders extends javax.swing.JFrame {
     }
     
     private void FilterPaymentMode() {
-        try (Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
-             Statement st = con.createStatement()) {
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+            Statement st = con.createStatement()) {
 
             String selectedCategory = PaymentModeFilter.getSelectedItem().toString();
             String query;
@@ -604,7 +656,7 @@ public class Orders extends javax.swing.JFrame {
 
     
     private void FilterSaleBy() {
-        try (Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
              Statement st = con.createStatement()) {
 
             String selectedCategory = SourceFilterComboBox.getSelectedItem().toString();
@@ -642,7 +694,69 @@ public class Orders extends javax.swing.JFrame {
     }
     
     private void SearchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchBtnActionPerformed
-        // TODO add your handling code here:
+        // Retrieve the order_id from the text field
+        String orderId = SearchOrder.getText();
+
+        // Check if the order_id is not empty
+        if (orderId.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please enter an Order ID.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Database connection variables
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            // Establish the database connection
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+
+            // SQL query to select item_name, item_price, quantity, and total from order_items where order_id matches
+            String query = "SELECT item_name, item_price, item_quantity, total FROM order_items WHERE order_id = ?";
+
+            // Create the PreparedStatement
+            pstmt = con.prepareStatement(query);
+
+            // Set the order_id parameter
+            pstmt.setString(1, orderId);
+
+            // Execute the query
+            rs = pstmt.executeQuery();
+
+            // Create a DefaultTableModel to manipulate data
+            DefaultTableModel model = (DefaultTableModel) DbUtils.resultSetToTableModel(rs);
+
+            // Set the model to the ResultsTable
+            OrderDetails.setModel(model);
+
+        } catch (SQLException e) {
+            // Display the error message in case of a database error
+            JOptionPane.showMessageDialog(null, "Database error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // Close resources
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    // Handle close exception if necessary
+                }
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException ex) {
+                    // Handle close exception if necessary
+                }
+            }
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException ex) {
+                    // Handle close exception if necessary
+                }
+            }
+        }
     }//GEN-LAST:event_SearchBtnActionPerformed
 
     private void SaleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaleActionPerformed
@@ -730,7 +844,7 @@ public class Orders extends javax.swing.JFrame {
         ResultSet rs = null;
 
         try {
-            Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
+            Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
 
             // Prepare the SQL query with placeholders to avoid SQL injection
             String sql = "SELECT * FROM orders WHERE order_date_time >= ? AND order_date_time <= ?";
@@ -815,6 +929,35 @@ public class Orders extends javax.swing.JFrame {
         ShowItems();
     }//GEN-LAST:event_ResetOrders1ActionPerformed
 
+    private void ReportsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReportsBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ReportsBtnActionPerformed
+
+    private void ReportsBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReportsBtn1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ReportsBtn1ActionPerformed
+
+    private void PaymentModeFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PaymentModeFilterActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_PaymentModeFilterActionPerformed
+
+    private void PrintOrdersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PrintOrdersActionPerformed
+        // TODO add your handling code here:
+        // TODO add your handling code here:
+        SimpleDateFormat Date_Format = new SimpleDateFormat("YYYY-MM-dd"); 
+        String datefrom=  Date_Format.format(sdate.getDate());
+        String dateto=  Date_Format.format(edate.getDate());
+       
+        MessageFormat header=new MessageFormat("Report From "+datefrom+" To " +dateto);
+        MessageFormat footer=new MessageFormat("page{0,number,integer}");
+        try {
+            OrdersTable.print(JTable.PrintMode.FIT_WIDTH, header, footer);
+            
+        } catch (Exception e) {
+            e.getMessage();
+        }
+    }//GEN-LAST:event_PrintOrdersActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -861,6 +1004,9 @@ public class Orders extends javax.swing.JFrame {
     private javax.swing.JTable OrdersTable;
     private javax.swing.JComboBox<String> PaymentModeFilter;
     private javax.swing.JButton PrintBtn;
+    private javax.swing.JButton PrintOrders;
+    private javax.swing.JButton ReportsBtn;
+    private javax.swing.JButton ReportsBtn1;
     private javax.swing.JButton ResetOrders;
     private javax.swing.JButton ResetOrders1;
     private javax.swing.JButton Sale;

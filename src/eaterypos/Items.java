@@ -23,6 +23,7 @@ public class Items extends javax.swing.JFrame {
     public Items() {
         initComponents();
         ShowItems();
+        loadCategoriesFromFile();
     }
     ResultSet Rs = null, Rs1 = null;
     Connection Con = null;
@@ -318,24 +319,29 @@ public class Items extends javax.swing.JFrame {
         .addGroup(jPanel1Layout.createSequentialGroup()
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(19, 19, 19)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGap(19, 19, 19)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(SaleBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(ItemsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(OrdersBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(OrderItemsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGap(47, 47, 47)
-                            .addComponent(Logo)))
+                        .addComponent(SaleBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(ItemsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(OrdersBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(OrderItemsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGap(29, 29, 29))
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addContainerGap()
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel8)
-                        .addComponent(FilterCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(LogoutBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGap(18, 18, 18)))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                            .addComponent(LogoutBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(29, 29, 29))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGap(28, 28, 28)
+                                    .addComponent(Logo)
+                                    .addGap(11, 11, 11))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel8)
+                                    .addComponent(FilterCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGap(18, 18, 18)))))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -376,6 +382,44 @@ public class Items extends javax.swing.JFrame {
             .addContainerGap()
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel1)
+                            .addGap(18, 18, 18)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 519, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel2)
+                            .addGap(19, 19, 19)
+                            .addComponent(jLabel3)
+                            .addGap(5, 5, 5)
+                            .addComponent(ItemName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLabel4)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(CategoryList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLabel5)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(ItemPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(AddItemBtn)
+                            .addGap(18, 18, 18)
+                            .addComponent(EditItemBtn)
+                            .addGap(18, 18, 18)
+                            .addComponent(RemoveItemBtn)
+                            .addGap(11, 11, 11)
+                            .addComponent(jLabel6)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLabel7)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(CategoryName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(AddCategBtn)
+                            .addGap(18, 18, 18)
+                            .addComponent(RemoveCategBtn)
+                            .addGap(0, 0, Short.MAX_VALUE)))
+                    .addGap(12, 12, 12))
+                .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(37, 37, 37)
                     .addComponent(SaleBtn)
                     .addGap(18, 18, 18)
@@ -384,47 +428,13 @@ public class Items extends javax.swing.JFrame {
                     .addComponent(OrdersBtn)
                     .addGap(18, 18, 18)
                     .addComponent(OrderItemsBtn)
-                    .addGap(26, 26, 26)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel8)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(FilterCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(18, 18, 18)
-                    .addComponent(Logo))
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addComponent(jLabel2)
-                    .addGap(19, 19, 19)
-                    .addComponent(jLabel3)
-                    .addGap(5, 5, 5)
-                    .addComponent(ItemName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jLabel4)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(CategoryList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jLabel5)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(ItemPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(18, 18, 18)
-                    .addComponent(AddItemBtn)
-                    .addGap(18, 18, 18)
-                    .addComponent(EditItemBtn)
-                    .addGap(18, 18, 18)
-                    .addComponent(RemoveItemBtn)
-                    .addGap(11, 11, 11)
-                    .addComponent(jLabel6)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jLabel7)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(CategoryName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(18, 18, 18)
-                    .addComponent(AddCategBtn)
-                    .addGap(18, 18, 18)
-                    .addComponent(RemoveCategBtn))
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addComponent(jLabel1)
-                    .addGap(18, 18, 18)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)))
-            .addGap(12, 12, 12)
+                    .addComponent(Logo)
+                    .addGap(123, 123, 123)))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(LogoutBtn)
                 .addComponent(AddCategBtn1))
@@ -442,14 +452,14 @@ public class Items extends javax.swing.JFrame {
         .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
     );
 
-    pack();
+    setSize(new java.awt.Dimension(1016, 608));
     setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
     int ItemID;
     private void CountItems() {
         try {
             // Establish connection
-            Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
+            Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
 
             // Create and execute the query to get the maximum ItemID
             St1 = Con.createStatement();
@@ -488,7 +498,7 @@ public class Items extends javax.swing.JFrame {
     private void ShowItems()
     {
     	try {
-            Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
+            Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
             St = Con.createStatement();
             Rs = St.executeQuery("SELECT * FROM items");
             ItemsList.setModel(DbUtils.resultSetToTableModel(Rs));
@@ -522,7 +532,7 @@ public class Items extends javax.swing.JFrame {
     }
     
     private void FilterItems() {
-        try (Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
              Statement st = con.createStatement()) {
 
             String selectedCategory = FilterCategory.getSelectedItem().toString();
@@ -584,7 +594,7 @@ public class Items extends javax.swing.JFrame {
         } else {
             try {
                 // Establish connection
-                Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
+                Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
 
                 // Call CountItems() to generate the next ItemID
                 CountItems();
@@ -638,6 +648,7 @@ public class Items extends javax.swing.JFrame {
         } else {
             // Add the category to the combo box
             CategoryList.addItem(categoryName);
+            FilterCategory.addItem(categoryName);
 
             // Save the categories to the file
             saveCategoriesToFile();
@@ -675,7 +686,7 @@ public class Items extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Please Fill All Details");
         } else {
             try {
-                Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
+                Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
                 String updateQuery = "UPDATE items SET Name = ?, Category = ?, price = ? WHERE ItemID = ?";
 
                 try (PreparedStatement Pst = Con.prepareStatement(updateQuery)) {
@@ -718,7 +729,7 @@ public class Items extends javax.swing.JFrame {
             int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this item?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 try {
-                    Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
+                    Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
                     String deleteQuery = "DELETE FROM items WHERE ItemID = ?";
 
                     try (PreparedStatement Pst = Con.prepareStatement(deleteQuery)) {
@@ -758,7 +769,7 @@ public class Items extends javax.swing.JFrame {
             int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this item?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 try {
-                    Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
+                    Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
                     String deleteQuery = "DELETE FROM items WHERE ItemID = ?";
 
                     try (PreparedStatement Pst = Con.prepareStatement(deleteQuery)) {

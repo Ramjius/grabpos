@@ -12,6 +12,8 @@ import javax.swing.JOptionPane;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.PreparedStatement;
+import java.text.MessageFormat;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import org.eclipse.jdt.internal.compiler.batch.Main;
 
@@ -60,7 +62,7 @@ public class OrderItems extends javax.swing.JFrame {
         edate = new com.toedter.calendar.JDateChooser();
         SearchOrderItems = new javax.swing.JButton();
         ResetOrderItems = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        PrintOrderItems = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -256,11 +258,16 @@ public class OrderItems extends javax.swing.JFrame {
                 .addContainerGap(26, Short.MAX_VALUE))
         );
 
-        jButton1.setBackground(new java.awt.Color(249, 188, 44));
-        jButton1.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(0, 0, 0));
-        jButton1.setIcon(new javax.swing.ImageIcon("C:\\Users\\ramgm\\Documents\\NetBeansProjects\\grabpos\\printer.png")); // NOI18N
-        jButton1.setText("PRINT");
+        PrintOrderItems.setBackground(new java.awt.Color(249, 188, 44));
+        PrintOrderItems.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
+        PrintOrderItems.setForeground(new java.awt.Color(0, 0, 0));
+        PrintOrderItems.setIcon(new javax.swing.ImageIcon("C:\\Users\\ramgm\\Documents\\NetBeansProjects\\grabpos\\printer.png")); // NOI18N
+        PrintOrderItems.setText("PRINT");
+        PrintOrderItems.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PrintOrderItemsActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -289,7 +296,7 @@ public class OrderItems extends javax.swing.JFrame {
                         .addGap(19, 19, 19))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(326, 326, 326)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(PrintOrderItems, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -316,7 +323,7 @@ public class OrderItems extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 441, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(PrintOrderItems, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -325,7 +332,7 @@ public class OrderItems extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -342,7 +349,7 @@ public class OrderItems extends javax.swing.JFrame {
     {
 
         try {
-            Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
+            Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
             St = Con.createStatement();
             Rs = St.executeQuery("SELECT * FROM order_items");
 
@@ -444,7 +451,7 @@ public class OrderItems extends javax.swing.JFrame {
         ResultSet rs = null;
 
         try {
-            Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
+            Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
 
             // Prepare the SQL query with placeholders to avoid SQL injection
             String sql = "SELECT * FROM order_items WHERE Date >= ? AND Date <= ?";
@@ -513,6 +520,22 @@ public class OrderItems extends javax.swing.JFrame {
         ShowItems();
     }//GEN-LAST:event_ResetOrderItemsActionPerformed
 
+    private void PrintOrderItemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PrintOrderItemsActionPerformed
+        // TODO add your handling code here:
+        SimpleDateFormat Date_Format = new SimpleDateFormat("YYYY-MM-dd"); 
+        String datefrom=  Date_Format.format(sdate.getDate());
+        String dateto=  Date_Format.format(edate.getDate());
+       
+        MessageFormat header=new MessageFormat("Report From "+datefrom+" To " +dateto);
+        MessageFormat footer=new MessageFormat("page{0,number,integer}");
+        try {
+            OrderItemsTable.print(JTable.PrintMode.FIT_WIDTH, header, footer);
+            
+        } catch (Exception e) {
+            e.getMessage();
+        } 
+    }//GEN-LAST:event_PrintOrderItemsActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -554,11 +577,11 @@ public class OrderItems extends javax.swing.JFrame {
     private javax.swing.JTable OrderItemsTable;
     private javax.swing.JButton OrdersBtn;
     private javax.swing.JButton OrdersItemsBtn;
+    private javax.swing.JButton PrintOrderItems;
     private javax.swing.JButton ResetOrderItems;
     private javax.swing.JButton Sale;
     private javax.swing.JButton SearchOrderItems;
     private com.toedter.calendar.JDateChooser edate;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
