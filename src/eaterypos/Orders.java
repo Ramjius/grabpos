@@ -564,7 +564,7 @@ public class Orders extends javax.swing.JFrame {
     private void ShowItems()
     {
         try {
-            Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+            Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
             St = Con.createStatement();
             Rs = St.executeQuery("SELECT * FROM orders");
 
@@ -617,7 +617,7 @@ public class Orders extends javax.swing.JFrame {
     }
     
     private void FilterPaymentMode() {
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+        try (Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
             Statement st = con.createStatement()) {
 
             String selectedCategory = PaymentModeFilter.getSelectedItem().toString();
@@ -656,7 +656,7 @@ public class Orders extends javax.swing.JFrame {
 
     
     private void FilterSaleBy() {
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+        try (Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
              Statement st = con.createStatement()) {
 
             String selectedCategory = SourceFilterComboBox.getSelectedItem().toString();
@@ -710,7 +710,7 @@ public class Orders extends javax.swing.JFrame {
 
         try {
             // Establish the database connection
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+            con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
 
             // SQL query to select item_name, item_price, quantity, and total from order_items where order_id matches
             String query = "SELECT item_name, item_price, item_quantity, total FROM order_items WHERE order_id = ?";
@@ -836,7 +836,7 @@ public class Orders extends javax.swing.JFrame {
 
     private void SearchOrdersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchOrdersActionPerformed
         // Formatting the date range
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String jdStr = sdf.format(sdate.getDate());
         String jd1Str = sdf.format(edate.getDate());
         
@@ -844,10 +844,10 @@ public class Orders extends javax.swing.JFrame {
         ResultSet rs = null;
 
         try {
-            Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+            Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
 
             // Prepare the SQL query with placeholders to avoid SQL injection
-            String sql = "SELECT * FROM orders WHERE order_date_time >= ? AND order_date_time <= ?";
+            String sql = "SELECT * FROM orders WHERE date >= ? AND date <= ?";
 
             // Creating the PreparedStatement
             pstmt = Con.prepareStatement(sql);
@@ -944,7 +944,7 @@ public class Orders extends javax.swing.JFrame {
     private void PrintOrdersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PrintOrdersActionPerformed
         // TODO add your handling code here:
         // TODO add your handling code here:
-        SimpleDateFormat Date_Format = new SimpleDateFormat("YYYY-MM-dd"); 
+        SimpleDateFormat Date_Format = new SimpleDateFormat("yyyy-MM-dd"); 
         String datefrom=  Date_Format.format(sdate.getDate());
         String dateto=  Date_Format.format(edate.getDate());
        

@@ -71,7 +71,7 @@ public class SelectReport extends javax.swing.JFrame {
         ReportName.setBackground(new java.awt.Color(255, 255, 255));
         ReportName.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
         ReportName.setForeground(new java.awt.Color(0, 102, 102));
-        ReportName.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Periodical Report", "Sales Report", "Summary Report" }));
+        ReportName.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sales Report", "Summary Report" }));
         ReportName.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(249, 188, 4), 1, true));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -273,19 +273,15 @@ public class SelectReport extends javax.swing.JFrame {
         String selectedReport = ReportName.getSelectedItem().toString();
 
         switch (selectedReport) {
-            case "Periodical Report":
-                // Assuming periodical_report is a class extending JFrame
-                new periodical_report().setVisible(true);
-                this.dispose();
-                break;
+            
             case "Sales Report":
                 // Assuming sales_report is a class extending JFrame
-                new sales_report().setVisible(true);
+                new sales_results().setVisible(true);
                 this.dispose();
                 break;
             case "Summary Report":
                 // Assuming summary_report is a class extending JFrame
-                new summary_report().setVisible(true);
+                new summary_results().setVisible(true);
                 this.dispose();
                 break;
             default:

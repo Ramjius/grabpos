@@ -15,7 +15,6 @@ public class Login extends javax.swing.JFrame {
      */
     public Login() {
         initComponents();
-        Seticon();
     }
 
     /**
@@ -155,9 +154,7 @@ public class Login extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
     
-    private void Seticon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("300 px logo grab.png")));
-    }
+    
     
     private void SignUpBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignUpBtnActionPerformed
         // SIGN UP:

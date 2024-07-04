@@ -54,7 +54,7 @@ public class Sale extends javax.swing.JFrame {
     private void ShowItems()
     {
     	try {
-            Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+            Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
             St = Con.createStatement();
             Rs = St.executeQuery("SELECT * FROM items");
             ItemsList1.setModel(DbUtils.resultSetToTableModel(Rs));
@@ -95,7 +95,7 @@ public class Sale extends javax.swing.JFrame {
     }
     
     private void FilterItems() {
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+        try (Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
              Statement st = con.createStatement()) {
 
             String selectedCategory = FilterCategory.getSelectedItem().toString();
@@ -962,6 +962,8 @@ public class Sale extends javax.swing.JFrame {
         PreparedStatement psOrderItems = null;
         PreparedStatement psOrders = null;
         PreparedStatement psOrderCount = null;
+        PreparedStatement psFetchItemID = null;
+        ResultSet rsItemID = null;
         ResultSet rsOrderCount = null;
 
         try {
@@ -974,22 +976,24 @@ public class Sale extends javax.swing.JFrame {
             }
 
             // Establish database connection
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+            conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
 
             // Count rows in the orders table to generate new Order ID
             String countOrdersSQL = "SELECT COUNT(*) FROM orders";
             psOrderCount = conn.prepareStatement(countOrdersSQL);
             rsOrderCount = psOrderCount.executeQuery();
 
+            // Get the current date and time
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+            String formattedDate = now.format(dateFormatter);
+            String formattedTime = now.format(timeFormatter);
+
             int orderID = 1; // Default to 1 if there are no rows in the orders table
             if (rsOrderCount.next()) {
                 orderID = rsOrderCount.getInt(1) + 1;
             }
-
-            // Get the current date and time
-            LocalDateTime now = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-            String formattedDateTime = now.format(formatter);
 
             // Get the paid amount and calculate change
             int amountPaid = 0;
@@ -1005,12 +1009,14 @@ public class Sale extends javax.swing.JFrame {
 
             // Get the payment mode
             String paymentMode = PaymentMode.getSelectedItem().toString();
-            
-            // Get the payment mode
-            String sale_by = SourceComboBox.getSelectedItem().toString();
+            String saleBy = SourceComboBox.getSelectedItem().toString();
+
+            // Prepare SQL query to fetch ItemID from items table
+            String sqlFetchItemID = "SELECT ItemID FROM items WHERE Name = ?";
+            psFetchItemID = conn.prepareStatement(sqlFetchItemID);
 
             // Prepare SQL query to insert order items
-            String sqlOrderItems = "INSERT INTO order_items (order_id, item_name, item_price, item_quantity, total, date) VALUES (?, ?, ?, ?, ?, ?)";
+            String sqlOrderItems = "INSERT INTO order_items (order_id, ItemID, item_name, item_price, item_quantity, total, date, time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             psOrderItems = conn.prepareStatement(sqlOrderItems);
 
             for (int i = 0; i < rowCount; i++) {
@@ -1019,29 +1025,43 @@ public class Sale extends javax.swing.JFrame {
                 int itemQty = Integer.parseInt(model.getValueAt(i, 2).toString());
                 int total = Integer.parseInt(model.getValueAt(i, 3).toString());
 
-                psOrderItems.setInt(1, orderID);
-                psOrderItems.setString(2, itemName);
-                psOrderItems.setInt(3, itemPrice);
-                psOrderItems.setInt(4, itemQty);
-                psOrderItems.setInt(5, total);
-                psOrderItems.setString(6, formattedDateTime);
+                // Fetch the ItemID from items table
+                psFetchItemID.setString(1, itemName);
+                rsItemID = psFetchItemID.executeQuery();
 
-                psOrderItems.addBatch(); // Add to batch for execution
+                if (rsItemID.next()) {
+                    int itemID = rsItemID.getInt("ItemID");
+
+                    // Insert into order_items table
+                    psOrderItems.setInt(1, orderID);
+                    psOrderItems.setInt(2, itemID);  // Use the fetched ItemID
+                    psOrderItems.setString(3, itemName);
+                    psOrderItems.setInt(4, itemPrice);
+                    psOrderItems.setInt(5, itemQty);
+                    psOrderItems.setInt(6, total);
+                    psOrderItems.setString(7, formattedDate);
+                    psOrderItems.setString(8, formattedTime);
+
+                    psOrderItems.addBatch(); // Add to batch for execution
+                } else {
+                    throw new SQLException("ItemID not found for item_name: " + itemName);
+                }
             }
 
             // Execute batch insertion for order items
             psOrderItems.executeBatch();
 
             // Prepare SQL query to insert order
-            String sqlOrders = "INSERT INTO orders (order_id, order_date_time, grand_total, amount_paid, payment_mode, change_value, sale_by) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String sqlOrders = "INSERT INTO orders (order_id, date, grand_total, amount_paid, payment_mode, change_value, sale_by, time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             psOrders = conn.prepareStatement(sqlOrders);
             psOrders.setInt(1, orderID);
-            psOrders.setString(2, formattedDateTime);
+            psOrders.setString(2, formattedDate);
             psOrders.setInt(3, GrandT);
             psOrders.setInt(4, amountPaid);
             psOrders.setString(5, paymentMode);
             psOrders.setInt(6, change);
-            psOrders.setString(7, sale_by);
+            psOrders.setString(7, saleBy);
+            psOrders.setString(8, formattedTime);
 
             // Execute insertion for orders
             psOrders.executeUpdate();
@@ -1061,12 +1081,12 @@ public class Sale extends javax.swing.JFrame {
             double rightMargin = 50; // Right margin in points
             paper.setImageableArea(leftMargin, 0, width - leftMargin - rightMargin, height);
             pf.setPaper(paper);
-            
+
             // Assuming placeholder values for missing parameters
             int discount = 0;
             int tax = 0; // Example placeholder
 
-            job.setPrintable(new ReceiptPrinter(OrdersList, logoPath, GrandT, amountPaid, change, formattedDateTime, discount, orderID), pf);
+            job.setPrintable(new ReceiptPrinter(OrdersList, logoPath, GrandT, amountPaid, change, paymentMode, discount, orderID), pf);
 
             if (job.printDialog()) {
                 try {
@@ -1085,24 +1105,47 @@ public class Sale extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "An error occurred while processing the payment.", "Error", JOptionPane.ERROR_MESSAGE);
         } finally {
             // Close resources
-            try {
-                if (rsOrderCount != null) {
+            if (rsItemID != null) {
+                try {
+                    rsItemID.close();
+                } catch (SQLException ex) {
+                }
+            }
+            if (rsOrderCount != null) {
+                try {
                     rsOrderCount.close();
+                } catch (SQLException ex) {
                 }
-                if (psOrderCount != null) {
+            }
+            if (psOrderCount != null) {
+                try {
                     psOrderCount.close();
+                } catch (SQLException ex) {
                 }
-                if (psOrderItems != null) {
+            }
+            if (psOrderItems != null) {
+                try {
                     psOrderItems.close();
+                } catch (SQLException ex) {
                 }
-                if (psOrders != null) {
+            }
+            if (psOrders != null) {
+                try {
                     psOrders.close();
+                } catch (SQLException ex) {
                 }
-                if (conn != null) {
+            }
+            if (psFetchItemID != null) {
+                try {
+                    psFetchItemID.close();
+                } catch (SQLException ex) {
+                }
+            }
+            if (conn != null) {
+                try {
                     conn.close();
+                } catch (SQLException ex) {
                 }
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, "Error closing database connection: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_PayBtnActionPerformed

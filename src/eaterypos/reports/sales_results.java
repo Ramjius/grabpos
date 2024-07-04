@@ -1,18 +1,27 @@
 
 package eaterypos.reports;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
 import org.eclipse.jdt.internal.compiler.batch.Main;
@@ -56,7 +65,7 @@ public class sales_results extends javax.swing.JFrame {
     private void ShowItems()
     {
         try {
-            Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+            Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
             St = Con.createStatement();
             Rs = St.executeQuery("SELECT * FROM orders");
 
@@ -157,7 +166,7 @@ public class sales_results extends javax.swing.JFrame {
         periodTxt = new javax.swing.JTextField();
         jSeparator1 = new javax.swing.JSeparator();
         jTextField2 = new javax.swing.JTextField();
-        ReportsBtn2 = new javax.swing.JButton();
+        PrintSalesBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -487,7 +496,7 @@ public class sales_results extends javax.swing.JFrame {
 
         jLabel12.setFont(new java.awt.Font("Cambria", 0, 14)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(0, 120, 120));
-        jLabel12.setText("Grand Total");
+        jLabel12.setText("Total Sold");
 
         jLabel13.setFont(new java.awt.Font("Cambria", 0, 14)); // NOI18N
         jLabel13.setForeground(new java.awt.Color(0, 120, 120));
@@ -535,7 +544,7 @@ public class sales_results extends javax.swing.JFrame {
                         .addGroup(SalesReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(SalesReportLayout.createSequentialGroup()
                                 .addComponent(jLabel12)
-                                .addGap(27, 27, 27)
+                                .addGap(18, 18, 18)
                                 .addComponent(grand_total, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel13)
@@ -625,6 +634,11 @@ public class sales_results extends javax.swing.JFrame {
         FetchSales.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
         FetchSales.setForeground(new java.awt.Color(249, 188, 44));
         FetchSales.setText("FETCH");
+        FetchSales.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                FetchSalesMouseClicked(evt);
+            }
+        });
         FetchSales.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 FetchSalesActionPerformed(evt);
@@ -720,14 +734,19 @@ public class sales_results extends javax.swing.JFrame {
             }
         });
 
-        ReportsBtn2.setBackground(new java.awt.Color(249, 188, 44));
-        ReportsBtn2.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
-        ReportsBtn2.setForeground(new java.awt.Color(12, 18, 35));
-        ReportsBtn2.setText("PRINT");
-        ReportsBtn2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
-        ReportsBtn2.addActionListener(new java.awt.event.ActionListener() {
+        PrintSalesBtn.setBackground(new java.awt.Color(249, 188, 44));
+        PrintSalesBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+        PrintSalesBtn.setForeground(new java.awt.Color(12, 18, 35));
+        PrintSalesBtn.setText("PRINT");
+        PrintSalesBtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
+        PrintSalesBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                PrintSalesBtnMouseClicked(evt);
+            }
+        });
+        PrintSalesBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ReportsBtn2ActionPerformed(evt);
+                PrintSalesBtnActionPerformed(evt);
             }
         });
 
@@ -746,7 +765,7 @@ public class sales_results extends javax.swing.JFrame {
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(SalesDetailsLayout.createSequentialGroup()
                         .addGap(86, 86, 86)
-                        .addComponent(ReportsBtn2, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(PrintSalesBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(SalesDetailsLayout.createSequentialGroup()
                 .addGap(58, 58, 58)
@@ -763,7 +782,7 @@ public class sales_results extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(32, 32, 32)
-                .addComponent(ReportsBtn2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(PrintSalesBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(23, 23, 23))
         );
 
@@ -820,9 +839,9 @@ public class sales_results extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_ReportsBtnActionPerformed
 
-    private void ReportsBtn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReportsBtn2ActionPerformed
+    private void PrintSalesBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PrintSalesBtnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_ReportsBtn2ActionPerformed
+    }//GEN-LAST:event_PrintSalesBtnActionPerformed
 
     private void LogoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LogoutMouseClicked
         // TODO add your handling code here:
@@ -861,7 +880,7 @@ public class sales_results extends javax.swing.JFrame {
     clearFields();
 
     // Formatting the date range
-    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     String jdStr = sdf.format(sdateSales.getDate());
     String jd1Str = sdf.format(edateSales.getDate());
 
@@ -869,10 +888,10 @@ public class sales_results extends javax.swing.JFrame {
     ResultSet rs = null;
 
     try {
-        Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+        Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
 
         // Prepare the SQL query with placeholders to avoid SQL injection
-        String sql = "SELECT * FROM orders WHERE order_date_time >= ? AND order_date_time <= ?";
+        String sql = "SELECT * FROM orders WHERE date >= ? AND date <= ?";
 
         // Creating the PreparedStatement
         pstmt = Con.prepareStatement(sql);
@@ -992,6 +1011,84 @@ public class sales_results extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_periodTxtActionPerformed
 
+    private void FetchSalesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_FetchSalesMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_FetchSalesMouseClicked
+
+    private void PrintSalesBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PrintSalesBtnMouseClicked
+        // Create a PrinterJob
+        PrinterJob job = PrinterJob.getPrinterJob();
+        job.setJobName("Print Report");
+
+        // Set the Printable for the PrinterJob
+        job.setPrintable(new Printable() {
+            @Override
+            public int print(Graphics pg, PageFormat pf, int pageNum) {
+                // We only want to print the first page
+                if (pageNum > 0) {
+                    return Printable.NO_SUCH_PAGE;
+                }
+
+                // Set up the graphics
+                Graphics2D g2 = (Graphics2D) pg;
+                g2.translate(pf.getImageableX(), pf.getImageableY());
+
+                // Get the dimensions of the panel and the print area
+                double panelWidth = SalesReport.getWidth();
+                double panelHeight = SalesReport.getHeight();
+                double pageWidth = pf.getImageableWidth();
+                double pageHeight = pf.getImageableHeight();
+
+                // Calculate the scale factor to fit the panel into the print area
+                double scaleX = pageWidth / panelWidth;
+                double scaleY = pageHeight / panelHeight;
+                double scale = Math.min(scaleX, scaleY);
+
+                // Apply the scaling to fit the page
+                g2.scale(scale, scale);
+
+                // Print the JPanel (assuming it's called SummaryReport)
+                SalesReport.printAll(g2);
+
+                // Special handling for the JTable within the JPanel
+                // Save the current transformation
+                AffineTransform originalTransform = g2.getTransform();
+
+                // Translate to the JTable position
+                g2.translate(SalesTable.getX(), SalesTable.getY());
+
+                try {
+                    // Print the JTable separately to ensure all rows are printed
+                    boolean complete = SalesTable.print(JTable.PrintMode.FIT_WIDTH, new MessageFormat("Sales Table"), new MessageFormat("Page {0}"));
+                    if (!complete) {
+                        return Printable.NO_SUCH_PAGE;
+                    }
+                } catch (PrinterException e) {
+                    e.printStackTrace();
+                    return Printable.NO_SUCH_PAGE;
+                }
+
+                // Restore the original transformation
+                g2.setTransform(originalTransform);
+
+                return Printable.PAGE_EXISTS;
+            }
+        });
+
+        // Show the print dialog to the user
+        boolean doPrint = job.printDialog();
+        if (doPrint) {
+            try {
+                // Print the job
+                job.print();
+            } catch (PrinterException e) {
+                // Handle any printing errors
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Printing Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_PrintSalesBtnMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -1034,9 +1131,9 @@ public class sales_results extends javax.swing.JFrame {
     private javax.swing.JPanel MenuPanel;
     private javax.swing.JButton Orders;
     private javax.swing.JButton OrdersItemsBtn;
+    private javax.swing.JButton PrintSalesBtn;
     private javax.swing.JButton ReportsBtn;
     private javax.swing.JButton ReportsBtn1;
-    private javax.swing.JButton ReportsBtn2;
     private javax.swing.JButton Sale;
     private javax.swing.JPanel SalesDetails;
     private javax.swing.JPanel SalesReport;

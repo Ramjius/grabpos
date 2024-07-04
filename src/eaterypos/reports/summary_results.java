@@ -2,6 +2,12 @@
 package eaterypos.reports;
 
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -108,7 +114,7 @@ public class summary_results extends javax.swing.JFrame {
         FetchSales = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         jTextField9 = new javax.swing.JTextField();
-        ReportsBtn3 = new javax.swing.JButton();
+        printSummaryBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setSize(new java.awt.Dimension(0, 0));
@@ -596,14 +602,19 @@ public class summary_results extends javax.swing.JFrame {
             }
         });
 
-        ReportsBtn3.setBackground(new java.awt.Color(249, 188, 44));
-        ReportsBtn3.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
-        ReportsBtn3.setForeground(new java.awt.Color(12, 18, 35));
-        ReportsBtn3.setText("PRINT");
-        ReportsBtn3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
-        ReportsBtn3.addActionListener(new java.awt.event.ActionListener() {
+        printSummaryBtn.setBackground(new java.awt.Color(249, 188, 44));
+        printSummaryBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+        printSummaryBtn.setForeground(new java.awt.Color(12, 18, 35));
+        printSummaryBtn.setText("PRINT");
+        printSummaryBtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
+        printSummaryBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                printSummaryBtnMouseClicked(evt);
+            }
+        });
+        printSummaryBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ReportsBtn3ActionPerformed(evt);
+                printSummaryBtnActionPerformed(evt);
             }
         });
 
@@ -619,7 +630,7 @@ public class summary_results extends javax.swing.JFrame {
                 .addGroup(SalesDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(SalesDetailsLayout.createSequentialGroup()
                         .addGap(102, 102, 102)
-                        .addComponent(ReportsBtn3, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(printSummaryBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(SalesDetailsLayout.createSequentialGroup()
                         .addGap(40, 40, 40)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -639,7 +650,7 @@ public class summary_results extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(32, 32, 32)
-                .addComponent(ReportsBtn3, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(printSummaryBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(23, 23, 23))
         );
 
@@ -735,28 +746,28 @@ public class summary_results extends javax.swing.JFrame {
         clearFields();
         
         // Formatting the date range
-    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-    String jdStr = sdf.format(sdateSales.getDate());
-    String jd1Str = sdf.format(edateSales.getDate());
-    PreparedStatement pstmt = null;
-    PreparedStatement pstmt1 = null;
-    PreparedStatement pstmt2 = null;
-    PreparedStatement pstmt3 = null;
-    PreparedStatement pstmt4 = null;
-    PreparedStatement pstmt5 = null;
-    ResultSet rs = null;
-    ResultSet rs1 = null;
-    ResultSet rs2 = null;
-    ResultSet rs3 = null;
-    ResultSet rs4 = null;
-    ResultSet rs5 = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String jdStr = sdf.format(sdateSales.getDate());
+        String jd1Str = sdf.format(edateSales.getDate());
+        PreparedStatement pstmt = null;
+        PreparedStatement pstmt1 = null;
+        PreparedStatement pstmt2 = null;
+        PreparedStatement pstmt3 = null;
+        PreparedStatement pstmt4 = null;
+        PreparedStatement pstmt5 = null;
+        ResultSet rs = null;
+        ResultSet rs1 = null;
+        ResultSet rs2 = null;
+        ResultSet rs3 = null;
+        ResultSet rs4 = null;
+        ResultSet rs5 = null;
 
-    try {
-        Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+        try {
+            Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
 
         // Prepare the SQL queries with placeholders to avoid SQL injection
-        String sql = "SELECT * FROM orders WHERE order_date_time >= ? AND order_date_time <= ?";
-        String sql1 = "SELECT COUNT(*) AS total_count FROM orders WHERE order_date_time >= ? AND order_date_time <= ?";
+        String sql = "SELECT * FROM orders WHERE date >= ? AND date <= ?";
+        String sql1 = "SELECT COUNT(*) AS total_count FROM orders WHERE date >= ? AND date <= ?";
         String sql2 = "SELECT item_name, COUNT(*) as item_count FROM order_items WHERE date >= ? AND date <= ? GROUP BY item_name ORDER BY item_count DESC LIMIT 1";
         String sql3 = "SELECT SUM(item_quantity) AS total_quantity FROM order_items WHERE item_name = ? AND date >= ? AND date <= ?";
         String sql4 = "SELECT * FROM expenses WHERE date >= ? AND date <= ?";
@@ -847,7 +858,7 @@ public class summary_results extends javax.swing.JFrame {
         // Calculate the sum of the price column in the expenses table
         int expenseTotal = 0;
         for (int i = 0; i < model1.getRowCount(); i++) {
-            expenseTotal += Integer.parseInt(model1.getValueAt(i, 5).toString()); // Assuming the 'price' column is at index 5
+            expenseTotal += Integer.parseInt(model1.getValueAt(i, 7).toString()); // Assuming the 'price' column is at index 5
         }
 
         // Set the text of the grand_total JTextField to the value of totalGrandSum
@@ -928,9 +939,59 @@ public class summary_results extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField9ActionPerformed
 
-    private void ReportsBtn3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReportsBtn3ActionPerformed
+    private void printSummaryBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printSummaryBtnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_ReportsBtn3ActionPerformed
+    }//GEN-LAST:event_printSummaryBtnActionPerformed
+
+    private void printSummaryBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_printSummaryBtnMouseClicked
+        // Create a PrinterJob
+        PrinterJob job = PrinterJob.getPrinterJob();
+        job.setJobName("Print Report");
+
+        // Set the Printable for the PrinterJob
+        job.setPrintable((Graphics pg, PageFormat pf, int pageNum) -> {
+            // We only want to print the first page
+            if (pageNum > 0) {
+                return Printable.NO_SUCH_PAGE;
+            }
+            
+            // Set up the graphics
+            Graphics2D g2 = (Graphics2D) pg;
+            g2.translate(pf.getImageableX(), pf.getImageableY());
+            
+            // Get the dimensions of the panel and the print area
+            double panelWidth = SummaryReport.getWidth();
+            double panelHeight = SummaryReport.getHeight();
+            double pageWidth = pf.getImageableWidth();
+            double pageHeight = pf.getImageableHeight();
+            
+            // Calculate the scale factor to fit the panel into the print area
+            double scaleX = pageWidth / panelWidth;
+            double scaleY = pageHeight / panelHeight;
+            double scale = Math.min(scaleX, scaleY);
+            
+            // Apply the scaling to fit the page
+            g2.scale(scale, scale);
+            
+            // Print the JPanel (assuming it's called SummaryReport)
+            SummaryReport.printAll(g2);
+            
+            return Printable.PAGE_EXISTS;
+        });
+
+        // Show the print dialog to the user
+        boolean doPrint = job.printDialog();
+        if (doPrint) {
+            try {
+                // Print the job
+                job.print();
+            } catch (PrinterException e) {
+            // Handle any printing errors
+            JOptionPane.showMessageDialog(null, "Printing Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        
+    }//GEN-LAST:event_printSummaryBtnMouseClicked
 
     /**
      * @param args the command line arguments
@@ -976,7 +1037,6 @@ public class summary_results extends javax.swing.JFrame {
     private javax.swing.JButton OrdersItemsBtn;
     private javax.swing.JButton ReportsBtn;
     private javax.swing.JButton ReportsBtn1;
-    private javax.swing.JButton ReportsBtn3;
     private javax.swing.JButton Sale;
     private javax.swing.JPanel SalesDetails;
     private javax.swing.JPanel SummaryReport;
@@ -1007,6 +1067,7 @@ public class summary_results extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField9;
     private javax.swing.JSeparator lastSeparator;
     private javax.swing.JLabel logoLabel;
+    private javax.swing.JButton printSummaryBtn;
     private javax.swing.JTextField salesCount;
     private com.toedter.calendar.JDateChooser sdateSales;
     private javax.swing.JTextField sdateSummary;

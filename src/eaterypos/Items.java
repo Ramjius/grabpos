@@ -459,7 +459,7 @@ public class Items extends javax.swing.JFrame {
     private void CountItems() {
         try {
             // Establish connection
-            Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+            Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
 
             // Create and execute the query to get the maximum ItemID
             St1 = Con.createStatement();
@@ -498,7 +498,7 @@ public class Items extends javax.swing.JFrame {
     private void ShowItems()
     {
     	try {
-            Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+            Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
             St = Con.createStatement();
             Rs = St.executeQuery("SELECT * FROM items");
             ItemsList.setModel(DbUtils.resultSetToTableModel(Rs));
@@ -532,7 +532,7 @@ public class Items extends javax.swing.JFrame {
     }
     
     private void FilterItems() {
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+        try (Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
              Statement st = con.createStatement()) {
 
             String selectedCategory = FilterCategory.getSelectedItem().toString();
@@ -594,7 +594,7 @@ public class Items extends javax.swing.JFrame {
         } else {
             try {
                 // Establish connection
-                Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+                Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
 
                 // Call CountItems() to generate the next ItemID
                 CountItems();
@@ -686,7 +686,7 @@ public class Items extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Please Fill All Details");
         } else {
             try {
-                Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+                Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
                 String updateQuery = "UPDATE items SET Name = ?, Category = ?, price = ? WHERE ItemID = ?";
 
                 try (PreparedStatement Pst = Con.prepareStatement(updateQuery)) {
@@ -729,7 +729,7 @@ public class Items extends javax.swing.JFrame {
             int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this item?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 try {
-                    Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+                    Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
                     String deleteQuery = "DELETE FROM items WHERE ItemID = ?";
 
                     try (PreparedStatement Pst = Con.prepareStatement(deleteQuery)) {
@@ -769,7 +769,7 @@ public class Items extends javax.swing.JFrame {
             int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this item?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 try {
-                    Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+                    Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
                     String deleteQuery = "DELETE FROM items WHERE ItemID = ?";
 
                     try (PreparedStatement Pst = Con.prepareStatement(deleteQuery)) {

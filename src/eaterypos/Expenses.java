@@ -1,21 +1,7 @@
 
 package eaterypos;
 
-import eaterypos.reports.SelectReport;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.HeadlessException;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.print.PageFormat;
-import java.awt.print.Paper;
-import java.awt.print.Printable;
-import static java.awt.print.Printable.NO_SUCH_PAGE;
-import static java.awt.print.Printable.PAGE_EXISTS;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -33,7 +19,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
 
@@ -66,7 +51,7 @@ public class Expenses extends javax.swing.JFrame {
     private void CountItems() {
         try {
             // Establish connection
-            Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+            Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
 
             // Create and execute the query to get the maximum ItemID
             St1 = Con.createStatement();
@@ -104,7 +89,7 @@ public class Expenses extends javax.swing.JFrame {
     private void ShowItems()
     {
     	try {
-            Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+            Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
             St = Con.createStatement();
             Rs = St.executeQuery("SELECT * FROM expenses");
             ExpenseList.setModel(DbUtils.resultSetToTableModel(Rs));
@@ -138,7 +123,7 @@ public class Expenses extends javax.swing.JFrame {
     }
     
     private void FilterItems() {
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+        try (Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
              Statement st = con.createStatement()) {
 
             String selectedCategory = FilterType.getSelectedItem().toString();
@@ -720,7 +705,7 @@ public class Expenses extends javax.swing.JFrame {
         } else {
             try {
                 // Establish connection
-                Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+                Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
 
                 // Call CountItems() to generate the next ItemID
                 CountItems();
@@ -811,7 +796,7 @@ public class Expenses extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Please Fill All Details");
         } else {
             try {
-                Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+                Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
                 String updateQuery = "UPDATE expenses SET item_name = ?, description = ?, supplier = ?, type = ?, quantity = ?, metric = ?, price = ? WHERE expense_id = ?";
 
                 try (PreparedStatement Pst = Con.prepareStatement(updateQuery)) {
@@ -858,7 +843,7 @@ public class Expenses extends javax.swing.JFrame {
             int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this item?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 try {
-                    Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+                    Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
                     String deleteQuery = "DELETE FROM expenses WHERE expense_id = ?";
 
                     try (PreparedStatement Pst = Con.prepareStatement(deleteQuery)) {

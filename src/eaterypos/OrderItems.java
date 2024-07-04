@@ -349,7 +349,7 @@ public class OrderItems extends javax.swing.JFrame {
     {
 
         try {
-            Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+            Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
             St = Con.createStatement();
             Rs = St.executeQuery("SELECT * FROM order_items");
 
@@ -359,12 +359,14 @@ public class OrderItems extends javax.swing.JFrame {
 
             // Calculate the sum of the total column
             int totalSum = 0;
+            int quantityCount = 0;
             for (int i = 0; i < model.getRowCount(); i++) {
-                totalSum += Integer.parseInt(model.getValueAt(i, 4).toString()); // Assuming the 'total' column is at index 4
+                totalSum += Integer.parseInt(model.getValueAt(i, 5).toString()); // Assuming the 'total' column is at index 5
+                quantityCount += Integer.parseInt(model.getValueAt(i, 4).toString()); // Assuming the 'quantity' column is at index 4
             }
 
             // Add a new row with the sum of the total column
-            Object[] sumRow = {"Total", "", "", "", totalSum, ""}; // Adjust indices as per your table structure
+            Object[] sumRow = {"Total", "", "", "", quantityCount, totalSum, ""}; // Adjust indices as per your table structure
             model.addRow(sumRow);
 
             // Set the model to the table
@@ -443,7 +445,7 @@ public class OrderItems extends javax.swing.JFrame {
 
     private void SearchOrderItemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchOrderItemsActionPerformed
         // Formatting the date range
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String jdStr = sdf.format(sdate.getDate());
         String jd1Str = sdf.format(edate.getDate());
         
@@ -451,10 +453,10 @@ public class OrderItems extends javax.swing.JFrame {
         ResultSet rs = null;
 
         try {
-            Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/grabdb", "root", "admin");
+            Con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
 
             // Prepare the SQL query with placeholders to avoid SQL injection
-            String sql = "SELECT * FROM order_items WHERE Date >= ? AND Date <= ?";
+            String sql = "SELECT * FROM order_items WHERE date >= ? AND date <= ?";
 
             // Creating the PreparedStatement
             pstmt = Con.prepareStatement(sql);
@@ -472,12 +474,14 @@ public class OrderItems extends javax.swing.JFrame {
 
             // Calculate the sum of the total column
             int totalSum = 0;
+            int quantityCount = 0;
             for (int i = 0; i < model.getRowCount(); i++) {
-                totalSum += Integer.parseInt(model.getValueAt(i, 4).toString()); // Assuming the 'total' column is at index 4
+                totalSum += Integer.parseInt(model.getValueAt(i, 5).toString()); // Assuming the 'total' column is at index 5
+                quantityCount += Integer.parseInt(model.getValueAt(i, 4).toString()); // Assuming the 'quantity' column is at index 4
             }
 
             // Add a new row with the sum of the total column
-            Object[] sumRow = {"Total", "", "", "", totalSum, ""}; // Adjust indices as per your table structure
+            Object[] sumRow = {"Total", "", "", "", quantityCount, totalSum, ""}; // Adjust indices as per your table structure
             model.addRow(sumRow);
 
             // Set the model to the table
@@ -522,7 +526,7 @@ public class OrderItems extends javax.swing.JFrame {
 
     private void PrintOrderItemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PrintOrderItemsActionPerformed
         // TODO add your handling code here:
-        SimpleDateFormat Date_Format = new SimpleDateFormat("YYYY-MM-dd"); 
+        SimpleDateFormat Date_Format = new SimpleDateFormat("yyyy-MM-dd"); 
         String datefrom=  Date_Format.format(sdate.getDate());
         String dateto=  Date_Format.format(edate.getDate());
        
