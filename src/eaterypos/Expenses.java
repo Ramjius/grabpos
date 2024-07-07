@@ -930,7 +930,7 @@ public class Expenses extends javax.swing.JFrame {
 
     private void ReportsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReportsBtnActionPerformed
         // TODO add your handling code here:
-        new eaterypos.reports.SelectReport().setVisible(true);
+        new SelectReport().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_ReportsBtnActionPerformed
 

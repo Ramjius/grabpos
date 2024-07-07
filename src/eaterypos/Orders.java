@@ -1,6 +1,19 @@
 package eaterypos;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.print.PageFormat;
+import java.awt.print.Paper;
+import java.awt.print.Printable;
+import static java.awt.print.Printable.NO_SUCH_PAGE;
+import static java.awt.print.Printable.PAGE_EXISTS;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -9,6 +22,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -61,7 +78,7 @@ public class Orders extends javax.swing.JFrame {
         Logout = new javax.swing.JButton();
         Logo = new javax.swing.JLabel();
         OrdersItemsBtn = new javax.swing.JButton();
-        PrintBtn = new javax.swing.JButton();
+        PrintReceiptBtn = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         sdate = new com.toedter.calendar.JDateChooser();
         edate = new com.toedter.calendar.JDateChooser();
@@ -78,8 +95,9 @@ public class Orders extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         ResetOrders1 = new javax.swing.JButton();
         ReportsBtn = new javax.swing.JButton();
-        ReportsBtn1 = new javax.swing.JButton();
+        ExpensesBtn = new javax.swing.JButton();
         PrintOrders = new javax.swing.JButton();
+        ClearOrderBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -164,6 +182,11 @@ public class Orders extends javax.swing.JFrame {
         });
         OrderDetails.setRowHeight(30);
         OrderDetails.setShowGrid(true);
+        OrderDetails.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                OrderDetailsMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(OrderDetails);
 
         Sale.setBackground(new java.awt.Color(249, 188, 44));
@@ -223,13 +246,14 @@ public class Orders extends javax.swing.JFrame {
             }
         });
 
-        PrintBtn.setBackground(new java.awt.Color(249, 188, 44));
-        PrintBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
-        PrintBtn.setForeground(new java.awt.Color(12, 18, 35));
-        PrintBtn.setText("PRINT ORDER");
-        PrintBtn.addActionListener(new java.awt.event.ActionListener() {
+        PrintReceiptBtn.setBackground(new java.awt.Color(249, 188, 44));
+        PrintReceiptBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+        PrintReceiptBtn.setForeground(new java.awt.Color(12, 18, 35));
+        PrintReceiptBtn.setIcon(new javax.swing.ImageIcon("C:\\Users\\ramgm\\Documents\\NetBeansProjects\\grabpos\\printer.png")); // NOI18N
+        PrintReceiptBtn.setText("PRINT ORDER");
+        PrintReceiptBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PrintBtnActionPerformed(evt);
+                PrintReceiptBtnActionPerformed(evt);
             }
         });
 
@@ -419,19 +443,29 @@ public class Orders extends javax.swing.JFrame {
         ReportsBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
         ReportsBtn.setForeground(new java.awt.Color(12, 18, 35));
         ReportsBtn.setText("REPORTS");
+        ReportsBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ReportsBtnMouseClicked(evt);
+            }
+        });
         ReportsBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ReportsBtnActionPerformed(evt);
             }
         });
 
-        ReportsBtn1.setBackground(new java.awt.Color(249, 188, 44));
-        ReportsBtn1.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
-        ReportsBtn1.setForeground(new java.awt.Color(12, 18, 35));
-        ReportsBtn1.setText("EXPENSES");
-        ReportsBtn1.addActionListener(new java.awt.event.ActionListener() {
+        ExpensesBtn.setBackground(new java.awt.Color(249, 188, 44));
+        ExpensesBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+        ExpensesBtn.setForeground(new java.awt.Color(12, 18, 35));
+        ExpensesBtn.setText("EXPENSES");
+        ExpensesBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ExpensesBtnMouseClicked(evt);
+            }
+        });
+        ExpensesBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ReportsBtn1ActionPerformed(evt);
+                ExpensesBtnActionPerformed(evt);
             }
         });
 
@@ -440,9 +474,25 @@ public class Orders extends javax.swing.JFrame {
         PrintOrders.setForeground(new java.awt.Color(12, 18, 35));
         PrintOrders.setIcon(new javax.swing.ImageIcon("C:\\Users\\ramgm\\Documents\\NetBeansProjects\\grabpos\\printer.png")); // NOI18N
         PrintOrders.setText("PRINT");
+        PrintOrders.setToolTipText("");
         PrintOrders.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 PrintOrdersActionPerformed(evt);
+            }
+        });
+
+        ClearOrderBtn.setBackground(new java.awt.Color(255, 0, 51));
+        ClearOrderBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+        ClearOrderBtn.setForeground(new java.awt.Color(12, 18, 35));
+        ClearOrderBtn.setText("CLEAR");
+        ClearOrderBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ClearOrderBtnMouseClicked(evt);
+            }
+        });
+        ClearOrderBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ClearOrderBtnActionPerformed(evt);
             }
         });
 
@@ -462,7 +512,7 @@ public class Orders extends javax.swing.JFrame {
                             .addComponent(Logout, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(OrdersItemsBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(ReportsBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(ReportsBtn1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(ExpensesBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
@@ -475,27 +525,31 @@ public class Orders extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(291, 291, 291)
                         .addComponent(PrintOrders, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(SearchBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addGap(4, 4, 4)
-                                                .addComponent(jLabel3))
-                                            .addComponent(jLabel2))
-                                        .addGap(131, 131, 131))
-                                    .addComponent(SearchOrder, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap(81, Short.MAX_VALUE))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(SearchBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGap(4, 4, 4)
+                                    .addComponent(jLabel3))
+                                .addComponent(jLabel2)))
+                        .addGap(139, 139, 139)
+                        .addComponent(ClearOrderBtn)
+                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(PrintBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(41, 41, 41))))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(PrintReceiptBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(75, 75, 75))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(SearchOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -520,7 +574,7 @@ public class Orders extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(OrdersItemsBtn)
                                 .addGap(18, 18, 18)
-                                .addComponent(ReportsBtn1)
+                                .addComponent(ExpensesBtn)
                                 .addGap(18, 18, 18)
                                 .addComponent(ReportsBtn)
                                 .addGap(54, 54, 54)
@@ -529,22 +583,25 @@ public class Orders extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                                 .addGap(11, 11, 11)))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(PrintOrders, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Logout)))
+                            .addComponent(Logout))
+                        .addGap(7, 7, 7))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(SearchOrder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(SearchBtn)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(SearchBtn)
+                            .addComponent(ClearOrderBtn))
                         .addGap(12, 12, 12)
                         .addComponent(jLabel3)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(PrintBtn)))
-                .addGap(7, 7, 7))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 384, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(PrintReceiptBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -613,6 +670,20 @@ public class Orders extends javax.swing.JFrame {
                     // Handle close exception if necessary
                 }
             }
+        }
+    }
+    
+    private void ClearSearch() {                                              
+        // Remove All Items from Orders List
+        try {
+            DefaultTableModel model = (DefaultTableModel) OrderDetails.getModel();
+            int rowCount = model.getRowCount();
+
+            for (int i = rowCount - 1; i >= 0; i--) {
+                model.removeRow(i);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "An error occurred while trying to clear the list.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
     
@@ -690,6 +761,167 @@ public class Orders extends javax.swing.JFrame {
             
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage());
+        }
+    }
+    
+    // Method to wrap text into multiple lines
+    private List<String> wrapText(String text, int maxWidth, FontMetrics metrics) {
+        List<String> lines = new ArrayList<>();
+        StringBuilder line = new StringBuilder();
+        for (String word : text.split(" ")) {
+            if (metrics.stringWidth(line + word) < maxWidth) {
+                line.append(word).append(" ");
+            } else {
+                lines.add(line.toString().trim());
+                line = new StringBuilder(word).append(" ");
+            }
+        }
+        if (!line.toString().isEmpty()) {
+            lines.add(line.toString().trim());
+        }
+        return lines;
+    }
+    
+    public class ReceiptPrinter implements Printable {
+    private JTable table;
+    private String logoPath;
+    private int grandTotal;
+    private int amountPaid;
+    private int change;
+    private String paymentMode;
+    private int discount;
+    private int orderID;
+    private String orderDate;
+    private String orderTime;
+    
+
+    public ReceiptPrinter(JTable table, String logoPath, int grandTotal, int amountPaid, int change, String paymentMode, int discount, int orderID, String orderDate, String orderTime) {
+        this.table = table;
+        this.logoPath = logoPath;
+        this.grandTotal = grandTotal;
+        this.amountPaid = amountPaid;
+        this.change = change;
+        this.paymentMode = paymentMode;
+        this.discount = discount;
+        this.orderID = orderID;
+        this.orderDate = orderDate;
+        this.orderTime = orderTime;
+    }
+
+    @Override
+    public int print(Graphics g, PageFormat pf, int page) throws PrinterException {
+        if (page > 0) {
+            return NO_SUCH_PAGE;
+        }
+
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.translate(pf.getImageableX(), pf.getImageableY());
+
+        int y = 20; // Starting y position
+
+        // Load and print the logo centered
+        try {
+            Image logo = Toolkit.getDefaultToolkit().getImage(logoPath);
+            int logoWidth = logo.getWidth(null);
+            int logoX = (int) (pf.getImageableWidth() - logoWidth) / 2;
+            g2d.drawImage(logo, logoX, y, null);
+            y += logo.getHeight(null) + 10; // Add space after logo
+        } catch (Exception e) {
+        }
+
+        // Print title
+        g2d.setFont(new Font("Cambria", Font.BOLD, 12));
+        g2d.drawString("Grab Garage", (int) (pf.getImageableWidth() / 2 - 40), y);
+        y += 20;
+
+        // Print subtitle
+        g2d.setFont(new Font("Cambria", Font.ITALIC, 10));
+        g2d.drawString("We Fix Your Cravings", (int) (pf.getImageableWidth() / 2 - 50), y);
+        y += 20;
+
+        // Print Order Number
+        g2d.setFont(new Font("Cambria", Font.PLAIN, 10));
+        g2d.drawString("Order # " + orderID, (int) (pf.getImageableWidth() - 80), y);
+        y += 20;
+
+        // Print broken line
+        g2d.drawString("---------------------------------", 0, y);
+        y += 20;
+
+        // Print table contents
+        DefaultTableModel model = (DefaultTableModel) OrderDetails.getModel();
+        g2d.setFont(new Font("Cambria", Font.PLAIN, 10));
+        FontMetrics metrics = g2d.getFontMetrics();
+
+        int maxItemNameWidth = (int) (pf.getImageableWidth() - 140); // Adjust this value as needed
+        int lineHeight = metrics.getHeight();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String itemName = model.getValueAt(i, 0).toString();
+            String itemPrice = model.getValueAt(i, 3).toString();
+
+            // Wrap the item name if necessary
+            List<String> wrappedItemName = wrapText(itemName, maxItemNameWidth, metrics);
+
+            // Print each line of the wrapped item name
+            for (String line : wrappedItemName) {
+                g2d.drawString(line, 0, y);
+                y += lineHeight;
+            }
+
+            // Print the price on the same line as the last line of the item name
+            g2d.drawString("Kshs " + itemPrice, (int) (pf.getImageableWidth() - 80), y - lineHeight);
+            y += 20; // Add additional spacing between items
+        }
+
+        // Print dotted line
+        g2d.drawString(".............................................", 0, y);
+        y += 20;
+
+        // Print Subtotal
+        g2d.drawString("Subtotal", 0, y);
+        g2d.drawString("Kshs " + grandTotal, (int) (pf.getImageableWidth() - 80), y);
+        y += 20;
+        
+        // Print Discount
+        //g2d.drawString("Discount", 0, y);
+        //g2d.drawString("Kshs " + discount, (int) (pf.getImageableWidth() - 80), y);
+        //y += 20;
+        
+        // Print Total
+        g2d.setFont(new Font("Cambria", Font.BOLD, 10));
+        g2d.drawString("Total", 0, y);
+        g2d.drawString("Kshs " + (grandTotal - discount), (int) (pf.getImageableWidth() - 80), y);
+        y += 20;
+
+        // Print continuous line
+        g2d.drawString("_________________________________", 0, y);
+        y += 20;
+
+        // Print Total Paid
+        g2d.setFont(new Font("Cambria", Font.PLAIN, 10));
+        g2d.drawString("Total Paid", 0, y);
+        g2d.drawString("Kshs " + amountPaid, (int) (pf.getImageableWidth() - 80), y);
+        y += 20;
+
+        // Print Change
+        g2d.drawString("Change", 0, y);
+        g2d.drawString("Kshs " + change, (int) (pf.getImageableWidth() - 80), y);
+        y += 20;
+
+        // Print Thank You Message
+        g2d.setFont(new Font("Cambria", Font.BOLD | Font.ITALIC, 8));
+        g2d.drawString("Thank You For Your Business", (int) (pf.getImageableWidth() / 2 - 60), y);
+        y += 20;
+        
+        // Combine orderDate and orderTime into a single string in the desired format
+        String dateTime = orderTime + " " + orderDate;
+
+        // Print the date and time
+        g2d.setFont(new Font("Cambria", Font.PLAIN, 10));
+        g2d.drawString(dateTime, (int) (pf.getImageableWidth() / 2 - 50), y);
+
+        return PAGE_EXISTS;
         }
     }
     
@@ -795,10 +1027,105 @@ public class Orders extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_OrdersItemsBtnActionPerformed
 
-    private void PrintBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PrintBtnActionPerformed
-        // TODO add your handling code here:
+    private void PrintReceiptBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PrintReceiptBtnActionPerformed
+        // Fetch the order ID from the search text field
+        String orderId = SearchOrder.getText();
 
-    }//GEN-LAST:event_PrintBtnActionPerformed
+        // Check if the order ID is not empty
+        if (orderId.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please enter an Order ID.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Database connection variables
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            // Establish the database connection
+            con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
+
+            // SQL query to select details from the orders table where order_id matches
+            String query = "SELECT grand_total, amount_paid, change_value, payment_mode, date, time FROM orders WHERE order_id = ?";
+
+            // Create the PreparedStatement
+            pstmt = con.prepareStatement(query);
+
+            // Set the order_id parameter
+            pstmt.setString(1, orderId);
+
+            // Execute the query
+            rs = pstmt.executeQuery();
+
+            // Check if the order exists
+            if (rs.next()) {
+                // Fetch the values from the result set
+                int grandTotal = rs.getInt("grand_total");
+                int amountPaid = rs.getInt("amount_paid");
+                int change = rs.getInt("change_value");
+                String paymentMode = rs.getString("payment_mode");
+                String orderDate = rs.getString("date");
+                String orderTime = rs.getString("time");
+                
+                //insert try catch to calculate sum of total or fetch total for print
+
+                // Print the receipt
+                String logoPath = "C:\\Users\\hp\\Documents\\grabpos 1.0\\80x80.png"; // Adjust the path to your logo image
+                PrinterJob job = PrinterJob.getPrinterJob();
+                PageFormat pf = job.defaultPage();
+                Paper paper = new Paper();
+                double width = 80 * 2.83464567; // 80mm width in points
+                double height = paper.getHeight();
+                paper.setSize(width, height);
+                double leftMargin = 50; // Left margin in points
+                double rightMargin = 50; // Right margin in points
+                paper.setImageableArea(leftMargin, 0, width - leftMargin - rightMargin, height);
+                pf.setPaper(paper);
+
+                // Assuming placeholder values for missing parameters
+                int discount = 0;
+                int tax = 0; // Example placeholder
+
+                job.setPrintable(new ReceiptPrinter(OrderDetails, logoPath, grandTotal, amountPaid, change, paymentMode, discount, Integer.parseInt(orderId), orderDate, orderTime), pf);
+
+                if (job.printDialog()) {
+                    try {
+                        job.print();
+                    } catch (PrinterException e) {
+                        JOptionPane.showMessageDialog(null, "Printing error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Order ID not found.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Database error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // Close resources
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }//GEN-LAST:event_PrintReceiptBtnActionPerformed
 
     private void SearchOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchOrderActionPerformed
         // TODO add your handling code here:
@@ -930,12 +1257,14 @@ public class Orders extends javax.swing.JFrame {
     }//GEN-LAST:event_ResetOrders1ActionPerformed
 
     private void ReportsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReportsBtnActionPerformed
-        // TODO add your handling code here:
+        new SelectReport().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_ReportsBtnActionPerformed
 
-    private void ReportsBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReportsBtn1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_ReportsBtn1ActionPerformed
+    private void ExpensesBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExpensesBtnActionPerformed
+        new Expenses().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_ExpensesBtnActionPerformed
 
     private void PaymentModeFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PaymentModeFilterActionPerformed
         // TODO add your handling code here:
@@ -952,11 +1281,38 @@ public class Orders extends javax.swing.JFrame {
         MessageFormat footer=new MessageFormat("page{0,number,integer}");
         try {
             OrdersTable.print(JTable.PrintMode.FIT_WIDTH, header, footer);
+            ClearSearch();
             
         } catch (Exception e) {
             e.getMessage();
         }
     }//GEN-LAST:event_PrintOrdersActionPerformed
+
+    private void ReportsBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ReportsBtnMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ReportsBtnMouseClicked
+
+    private void ExpensesBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ExpensesBtnMouseClicked
+        new Expenses().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_ExpensesBtnMouseClicked
+
+    private void ClearOrderBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ClearOrderBtnMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ClearOrderBtnMouseClicked
+
+    private void ClearOrderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ClearOrderBtnActionPerformed
+        
+    }//GEN-LAST:event_ClearOrderBtnActionPerformed
+
+    private void OrderDetailsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_OrderDetailsMouseClicked
+        // TODO add your handling code here:
+        // No Editing
+        boolean a=OrderDetails.isEditing();
+        if(a==false){
+            JOptionPane.showMessageDialog(null, "Can't Be Edited!");
+        }
+    }//GEN-LAST:event_OrderDetailsMouseClicked
 
     /**
      * @param args the command line arguments
@@ -995,6 +1351,8 @@ public class Orders extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton ClearOrderBtn;
+    private javax.swing.JButton ExpensesBtn;
     private javax.swing.JButton ItemsBtn;
     private javax.swing.JLabel Logo;
     private javax.swing.JButton Logout;
@@ -1003,10 +1361,9 @@ public class Orders extends javax.swing.JFrame {
     private javax.swing.JButton OrdersItemsBtn;
     private javax.swing.JTable OrdersTable;
     private javax.swing.JComboBox<String> PaymentModeFilter;
-    private javax.swing.JButton PrintBtn;
     private javax.swing.JButton PrintOrders;
+    private javax.swing.JButton PrintReceiptBtn;
     private javax.swing.JButton ReportsBtn;
-    private javax.swing.JButton ReportsBtn1;
     private javax.swing.JButton ResetOrders;
     private javax.swing.JButton ResetOrders1;
     private javax.swing.JButton Sale;

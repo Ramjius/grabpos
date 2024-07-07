@@ -63,6 +63,8 @@ public class OrderItems extends javax.swing.JFrame {
         SearchOrderItems = new javax.swing.JButton();
         ResetOrderItems = new javax.swing.JButton();
         PrintOrderItems = new javax.swing.JButton();
+        ExpensesBtn = new javax.swing.JButton();
+        ReportsBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -269,6 +271,36 @@ public class OrderItems extends javax.swing.JFrame {
             }
         });
 
+        ExpensesBtn.setBackground(new java.awt.Color(249, 188, 44));
+        ExpensesBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+        ExpensesBtn.setForeground(new java.awt.Color(12, 18, 35));
+        ExpensesBtn.setText("EXPENSES");
+        ExpensesBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ExpensesBtnMouseClicked(evt);
+            }
+        });
+        ExpensesBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ExpensesBtnActionPerformed(evt);
+            }
+        });
+
+        ReportsBtn.setBackground(new java.awt.Color(249, 188, 44));
+        ReportsBtn.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+        ReportsBtn.setForeground(new java.awt.Color(12, 18, 35));
+        ReportsBtn.setText("REPORTS");
+        ReportsBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ReportsBtnMouseClicked(evt);
+            }
+        });
+        ReportsBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ReportsBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -276,7 +308,7 @@ public class OrderItems extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(44, 44, 44)
+                        .addGap(43, 43, 43)
                         .addComponent(Logo))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(22, 22, 22)
@@ -286,7 +318,12 @@ public class OrderItems extends javax.swing.JFrame {
                             .addComponent(OrdersBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(OrdersItemsBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
                             .addComponent(Logout, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(ExpensesBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ReportsBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
@@ -317,11 +354,15 @@ public class OrderItems extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(OrdersItemsBtn)
                         .addGap(18, 18, 18)
+                        .addComponent(ExpensesBtn)
+                        .addGap(18, 18, 18)
+                        .addComponent(ReportsBtn)
+                        .addGap(51, 51, 51)
                         .addComponent(Logo)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(117, 117, 117)
                         .addComponent(Logout))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 441, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(PrintOrderItems, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -540,6 +581,25 @@ public class OrderItems extends javax.swing.JFrame {
         } 
     }//GEN-LAST:event_PrintOrderItemsActionPerformed
 
+    private void ExpensesBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ExpensesBtnMouseClicked
+        new Expenses().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_ExpensesBtnMouseClicked
+
+    private void ExpensesBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExpensesBtnActionPerformed
+        new Expenses().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_ExpensesBtnActionPerformed
+
+    private void ReportsBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ReportsBtnMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ReportsBtnMouseClicked
+
+    private void ReportsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReportsBtnActionPerformed
+        new SelectReport().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_ReportsBtnActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -575,6 +635,7 @@ public class OrderItems extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton ExpensesBtn;
     private javax.swing.JButton ItemsBtn;
     private javax.swing.JLabel Logo;
     private javax.swing.JButton Logout;
@@ -582,6 +643,7 @@ public class OrderItems extends javax.swing.JFrame {
     private javax.swing.JButton OrdersBtn;
     private javax.swing.JButton OrdersItemsBtn;
     private javax.swing.JButton PrintOrderItems;
+    private javax.swing.JButton ReportsBtn;
     private javax.swing.JButton ResetOrderItems;
     private javax.swing.JButton Sale;
     private javax.swing.JButton SearchOrderItems;
