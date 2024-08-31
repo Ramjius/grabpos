@@ -1,14 +1,21 @@
 
 package eaterypos;
 
-import java.awt.Toolkit;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
  * @author ramjius muhsin
  */
 public class Login extends javax.swing.JFrame {
+    
+    private String loggedInUserRole;
 
     /**
      * Creates new form Login
@@ -155,32 +162,86 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     
     
-    
     private void SignUpBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignUpBtnActionPerformed
         // SIGN UP:
-        if (UsernameTab.getText().isEmpty()||PasswordTab.getText().isEmpty()){
-            JOptionPane.showMessageDialog(this, "Enter Username and Password");
-        }else if (UsernameTab.getText().equals("admin")&&PasswordTab.getText().equals("password")) {
-            new Sale().setVisible(true);
-            this.dispose();
-        }else{
-            JOptionPane.showMessageDialog(this, "Invalid Username OR Password!!");
-            UsernameTab.setText("");
-            PasswordTab.setText("");
-        }
+        new SignUp().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_SignUpBtnActionPerformed
 
     private void LoginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginBtnActionPerformed
         // LOGIN:
-        if (UsernameTab.getText().isEmpty()||PasswordTab.getText().isEmpty()){
-            JOptionPane.showMessageDialog(this, "Enter Username and Password");
-        }else if (UsernameTab.getText().equals("admin")&&PasswordTab.getText().equals("admin")) {
-            new Sale().setVisible(true);
-            this.dispose();
-        }else{
-            JOptionPane.showMessageDialog(this, "Invalid Username OR Password!!");
-            UsernameTab.setText("");
-            PasswordTab.setText("");
+        
+        // Fetch data from input fields
+        String username = UsernameTab.getText();
+        String password = new String(PasswordTab.getPassword());
+
+        // Database connection variables
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            // Establish the database connection
+            con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
+
+            // SQL query to fetch user by username
+            String query = "SELECT user_role, password FROM users WHERE username = ?";
+
+            // Create the PreparedStatement
+            pstmt = con.prepareStatement(query);
+            pstmt.setString(1, username);
+
+            // Execute the query
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                // Fetch the hashed password from the result set
+                String hashedPassword = rs.getString("password");
+
+                // Check if the entered password matches the hashed password
+                if (BCrypt.checkpw(password, hashedPassword)) {
+                    // Password matches, fetch the user role
+                    loggedInUserRole = rs.getString("user_role");
+
+                    // Proceed to the next JFrame
+                    JOptionPane.showMessageDialog(null, "Login successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    this.dispose(); // Close the Login JFrame
+                    Sale saleFrame = new Sale();
+                    saleFrame.setVisible(true);
+                } else {
+                    // Password does not match
+                    JOptionPane.showMessageDialog(null, "Invalid username or password.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                // User not found
+                JOptionPane.showMessageDialog(null, "Invalid username or password.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Database error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // Close resources
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
     }//GEN-LAST:event_LoginBtnActionPerformed
 

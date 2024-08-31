@@ -2,12 +2,24 @@
 package eaterypos;
 
 import javax.swing.JOptionPane;
+import org.mindrot.jbcrypt.BCrypt;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JPasswordField;
+
 
 /**
  *
  * @author RAMJIUS MUHSIN
  */
 public class SelectReport extends javax.swing.JFrame {
+    
+    public SelectReport(String loggedInUserRole) {
+        initComponents();
+    }
 
     /**
      * Creates new form SelectReport
@@ -71,7 +83,7 @@ public class SelectReport extends javax.swing.JFrame {
         ReportName.setBackground(new java.awt.Color(255, 255, 255));
         ReportName.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
         ReportName.setForeground(new java.awt.Color(0, 102, 102));
-        ReportName.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sales Report", "Summary Report" }));
+        ReportName.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sales Report", "Summary Report", "Expense Report" }));
         ReportName.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(249, 188, 4), 1, true));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -270,23 +282,115 @@ public class SelectReport extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void GoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GoBtnActionPerformed
-        String selectedReport = ReportName.getSelectedItem().toString();
+        // Prompt the user to enter their username and password
+        String username = JOptionPane.showInputDialog(this, "Enter your username:");
+        if (username == null || username.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Username is required.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-        switch (selectedReport) {
-            
-            case "Sales Report":
-                // Assuming sales_report is a class extending JFrame
-                new sales_results().setVisible(true);
-                this.dispose();
-                break;
-            case "Summary Report":
-                // Assuming summary_report is a class extending JFrame
-                new summary_results().setVisible(true);
-                this.dispose();
-                break;
-            default:
-                JOptionPane.showMessageDialog(this, "Please select a valid report type.", "Error", JOptionPane.ERROR_MESSAGE);
-                break;
+        // Prompt the user to enter their password using JPasswordField
+        JPasswordField passwordField = new JPasswordField();
+        int option = JOptionPane.showConfirmDialog(this, passwordField, "Enter your password", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (option != JOptionPane.OK_OPTION) {
+            return;
+        }
+        String password = new String(passwordField.getPassword());
+        if (password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Password is required.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Database connection variables
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            // Establish the database connection
+            con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/grabdb", "root", "admin");
+
+            // SQL query to fetch user by username
+            String query = "SELECT user_role, password FROM users WHERE username = ?";
+
+            // Create the PreparedStatement
+            pstmt = con.prepareStatement(query);
+            pstmt.setString(1, username);
+
+            // Execute the query
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                // Fetch the hashed password from the result set
+                String hashedPassword = rs.getString("password");
+
+                // Check if the entered password matches the hashed password
+                if (BCrypt.checkpw(password, hashedPassword)) {
+                    // Password matches, fetch the user role
+                    String userRole = rs.getString("user_role");
+
+                    // Check if the logged-in user's role is Admin
+                    if (!"Admin".equals(userRole)) {
+                        JOptionPane.showMessageDialog(this, "You do not have permission to access this report.", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    // Execute the appropriate action based on the selected report
+                    String selectedReport = ReportName.getSelectedItem().toString();
+                    switch (selectedReport) {
+                        case "Sales Report":
+                            // Assuming sales_results is a class extending JFrame
+                            new sales_results().setVisible(true);
+                            this.dispose();
+                            break;
+                        case "Summary Report":
+                            // Assuming summary_results is a class extending JFrame
+                            new summary_results().setVisible(true);
+                            this.dispose();
+                            break;
+                        case "Expense Report":
+                            // Assuming summary_results is a class extending JFrame
+                            new expense_results().setVisible(true);
+                            this.dispose();
+                            break;
+                        default:
+                            JOptionPane.showMessageDialog(this, "Please select a valid report type.", "Error", JOptionPane.ERROR_MESSAGE);
+                            break;
+                    }
+                } else {
+                    // Password does not match
+                    JOptionPane.showMessageDialog(this, "Invalid username or password.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                // User not found
+                JOptionPane.showMessageDialog(this, "Invalid username or password.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // Close resources
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
     }//GEN-LAST:event_GoBtnActionPerformed
 

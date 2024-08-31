@@ -213,10 +213,10 @@ public class Sale extends javax.swing.JFrame {
 
         // Print table contents
         DefaultTableModel model = (DefaultTableModel) table.getModel();
-        g2d.setFont(new Font("Cambria", Font.PLAIN, 10));
+        g2d.setFont(new Font("Cambria", Font.PLAIN, 8));
         FontMetrics metrics = g2d.getFontMetrics();
 
-        int maxItemNameWidth = (int) (pf.getImageableWidth() - 140); // Adjust this value as needed
+        int maxItemNameWidth = (int) (pf.getImageableWidth() - 60); // Adjust this value as needed
         int lineHeight = metrics.getHeight();
 
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -233,17 +233,18 @@ public class Sale extends javax.swing.JFrame {
             }
 
             // Print the price on the same line as the last line of the item name
-            g2d.drawString("Kshs " + itemPrice, (int) (pf.getImageableWidth() - 80), y - lineHeight);
-            y += 20; // Add additional spacing between items
+            g2d.drawString("Kshs " + itemPrice, (int) (pf.getImageableWidth() - 60), y - lineHeight);
+            y += 10; // Add additional spacing between items
         }
 
         // Print dotted line
-        g2d.drawString(".............................................", 0, y);
+        g2d.drawString(".............................................................", 0, y);
         y += 20;
 
         // Print Subtotal
+        g2d.setFont(new Font("Cambria", Font.PLAIN, 10));
         g2d.drawString("Subtotal", 0, y);
-        g2d.drawString("Kshs " + grandTotal, (int) (pf.getImageableWidth() - 80), y);
+        g2d.drawString("Kshs " + grandTotal, (int) (pf.getImageableWidth() - 70), y);
         y += 20;
         
         // Print Discount
@@ -254,22 +255,22 @@ public class Sale extends javax.swing.JFrame {
         // Print Total
         g2d.setFont(new Font("Cambria", Font.BOLD, 10));
         g2d.drawString("Total", 0, y);
-        g2d.drawString("Kshs " + (grandTotal - discount), (int) (pf.getImageableWidth() - 80), y);
+        g2d.drawString("Kshs " + (grandTotal - discount), (int) (pf.getImageableWidth() - 70), y);
         y += 20;
 
         // Print continuous line
-        g2d.drawString("_________________________________", 0, y);
+        g2d.drawString("____________________________", 0, y);
         y += 20;
 
         // Print Total Paid
         g2d.setFont(new Font("Cambria", Font.PLAIN, 10));
         g2d.drawString("Total Paid", 0, y);
-        g2d.drawString("Kshs " + amountPaid, (int) (pf.getImageableWidth() - 80), y);
+        g2d.drawString("Kshs " + amountPaid, (int) (pf.getImageableWidth() - 60), y);
         y += 20;
 
         // Print Change
         g2d.drawString("Change", 0, y);
-        g2d.drawString("Kshs " + change, (int) (pf.getImageableWidth() - 80), y);
+        g2d.drawString("Kshs " + change, (int) (pf.getImageableWidth() - 60), y);
         y += 20;
 
         // Print Thank You Message
@@ -524,7 +525,7 @@ public class Sale extends javax.swing.JFrame {
         ItemQty.setBackground(new java.awt.Color(207, 217, 214));
         ItemQty.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
         ItemQty.setForeground(new java.awt.Color(12, 18, 35));
-        ItemQty.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "--", "1", "2", "3", "4", "5", "6", "7", "8", "9" }));
+        ItemQty.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "--", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30" }));
         ItemQty.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(249, 188, 44)));
         ItemQty.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -630,7 +631,7 @@ public class Sale extends javax.swing.JFrame {
         PaymentMode.setBackground(new java.awt.Color(5, 76, 74));
         PaymentMode.setFont(new java.awt.Font("Cambria", 0, 14)); // NOI18N
         PaymentMode.setForeground(new java.awt.Color(249, 188, 44));
-        PaymentMode.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "CASH", "M-PESA", "CARD" }));
+        PaymentMode.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "M-PESA", "CASH", "CARD" }));
 
         DiscountField.setBackground(new java.awt.Color(255, 255, 255));
         DiscountField.setFont(new java.awt.Font("Cambria", 0, 12)); // NOI18N
@@ -652,7 +653,7 @@ public class Sale extends javax.swing.JFrame {
         SourceComboBox.setBackground(new java.awt.Color(5, 76, 74));
         SourceComboBox.setFont(new java.awt.Font("Cambria", 0, 14)); // NOI18N
         SourceComboBox.setForeground(new java.awt.Color(249, 188, 44));
-        SourceComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bolt", "Glovo", "In-House" }));
+        SourceComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "In-House", "Bolt", "Glovo" }));
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
